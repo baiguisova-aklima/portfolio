@@ -3,104 +3,46 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900">
-      {/* Top Navigation */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-slate-200">
-        <nav className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <a href="#hero" className="text-sm font-medium text-slate-900 hover:text-slate-700">
-              Aklima Morozova
-            </a>
-            <div className="flex items-center gap-6">
-              <a href="#about" className="text-sm text-slate-600 hover:text-slate-900">
-                About
-              </a>
-              <a href="#services" className="text-sm text-slate-600 hover:text-slate-900">
-                Services
-              </a>
-              <a href="#work" className="text-sm text-slate-600 hover:text-slate-900">
-                Work
-              </a>
-              <a href="#contact" className="text-sm text-slate-600 hover:text-slate-900">
-                Contact
-              </a>
-            </div>
-          </div>
-        </nav>
-      </header>
-
-      {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 lg:p-10 space-y-12 lg:space-y-16">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 lg:p-10 space-y-10 lg:space-y-12">
           {/* Hero Section */}
-          <section id="hero" className="scroll-mt-24">
-            <div className="lg:grid lg:grid-cols-2 lg:gap-12">
-              <div className="space-y-6">
-                <p className="text-xs uppercase tracking-widest text-slate-500">
-                  Product strategy & mentoring
-                </p>
-                <h1 className="text-3xl lg:text-5xl font-bold tracking-tight text-slate-900">
-                  Aklima Morozova (née Baiguisova)
-                </h1>
-                <p className="text-lg font-medium text-slate-700">
-                  Product Strategy & SaaS Mentor
-                </p>
-                <p className="text-base text-slate-600 leading-relaxed max-w-[36rem]">
-                  I help B2B SaaS teams turn complex workflows into simple, human products and make calm, confident product decisions.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 pt-2">
-                  <a
-                    href="#contact"
-                    className="inline-flex items-center justify-center rounded-full bg-slate-900 text-slate-50 px-5 py-2 text-sm font-medium hover:bg-slate-800 transition-colors"
-                  >
-                    Work with me
-                  </a>
-                  <a
-                    href="#work"
-                    className="inline-flex items-center justify-center text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors"
-                  >
-                    See selected work
-                  </a>
-                </div>
-              </div>
-              <div className="mt-8 lg:mt-0">
-                <div className="bg-white border border-slate-200 rounded-xl p-5">
-                  <p className="text-xs uppercase tracking-widest text-slate-500 mb-4">
-                    Snapshot
-                  </p>
-                  <ul className="space-y-3 text-sm text-slate-700">
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <span>10+ years in B2B SaaS</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <span>Billing, payments, reporting, online platforms</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <span>PM → Team lead → Head of Product</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <span>Independent advisor & mentor</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+          <section id="hero" className="space-y-6">
+            <h1 className="text-3xl lg:text-5xl font-bold tracking-tight text-slate-900">
+              Aklima Morozova (née Baiguisova)
+            </h1>
+            <p className="text-lg font-medium text-slate-700">
+              Product Strategy & SaaS Mentor
+            </p>
+            <p className="text-base leading-relaxed text-slate-700">
+              I help B2B SaaS teams turn complex workflows into simple, human products and make calm, confident product decisions.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 pt-2">
+              <a
+                href="#contact"
+                className="inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-2 text-sm font-medium text-slate-50 hover:bg-slate-800 transition"
+              >
+                Work with me
+              </a>
+              <a
+                href="#what-i-do"
+                className="inline-flex items-center justify-center text-sm font-medium text-slate-700 hover:text-slate-900"
+              >
+                What I do
+              </a>
             </div>
           </section>
 
           {/* About Section */}
-          <section id="about" className="scroll-mt-24 space-y-6">
+          <section id="about" className="space-y-4">
             <div className="space-y-2">
-              <p className="text-xs uppercase tracking-widest text-slate-500">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                 About
               </p>
-              <h2 className="text-2xl lg:text-3xl font-semibold text-slate-900">
-                Who I work with
+              <h2 className="text-xl lg:text-2xl font-semibold text-slate-900">
+                About
               </h2>
             </div>
-            <div className="space-y-4 text-base text-slate-600 leading-relaxed">
+            <div className="space-y-4 text-base leading-relaxed text-slate-700">
               <p>
                 I'm a product leader with 10+ years in B2B SaaS: billing, payments, reporting and online platforms.
               </p>
@@ -113,133 +55,157 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Services Section */}
-          <section id="services" className="scroll-mt-24 space-y-6">
+          {/* What I do Section */}
+          <section id="what-i-do" className="space-y-4">
             <div className="space-y-2">
-              <p className="text-xs uppercase tracking-widest text-slate-500">
-                Services
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                What I do
               </p>
-              <h2 className="text-2xl lg:text-3xl font-semibold text-slate-900">
-                How I can help
+              <h2 className="text-xl lg:text-2xl font-semibold text-slate-900">
+                What I do
               </h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 hover:shadow-md hover:-translate-y-1 transition-all duration-200">
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">
-                  Product & UX mentoring
-                </h3>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  Regular calls to review features, hypotheses and product focus.
-                </p>
-              </div>
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 hover:shadow-md hover:-translate-y-1 transition-all duration-200">
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">
-                  Product strategy
-                </h3>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  Clarifying what to build next (and what to drop) so the roadmap matches the strategy.
-                </p>
-              </div>
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 hover:shadow-md hover:-translate-y-1 transition-all duration-200">
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">
-                  Simplifying complex flows
-                </h3>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  Turning complicated billing, payments and reporting flows into simple, human products.
-                </p>
-              </div>
-            </div>
+            <ul className="space-y-2 text-base leading-relaxed text-slate-700 list-disc list-inside">
+              <li>
+                <strong>Product & UX mentoring</strong> – regular calls to review features, hypotheses and focus.
+              </li>
+              <li>
+                <strong>Product strategy</strong> – clarifying what to build next (and what to drop) so the roadmap matches the strategy.
+              </li>
+              <li>
+                <strong>Simplifying complex flows</strong> – making sign-up, checkout, billing, reporting and admin tools usable for non-experts.
+              </li>
+              <li>
+                <strong>Founder / HoP sounding board</strong> – a trusted partner to talk through decisions, org and go-to-market.
+              </li>
+            </ul>
+            <blockquote className="mt-6 pl-4 border-l-4 border-slate-300 italic text-slate-600 leading-relaxed">
+              I don't build competing products. My goal is to make your existing product and team stronger.
+            </blockquote>
           </section>
 
-          {/* Selected Work Section */}
-          <section id="work" className="scroll-mt-24 space-y-6">
+          {/* Experience in short Section */}
+          <section id="experience" className="space-y-4">
             <div className="space-y-2">
-              <p className="text-xs uppercase tracking-widest text-slate-500">
-                Selected work
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Experience in short
               </p>
-              <h2 className="text-2xl lg:text-3xl font-semibold text-slate-900">
-                Recent roles & projects
+              <h2 className="text-xl lg:text-2xl font-semibold text-slate-900">
+                Experience in short
               </h2>
             </div>
-            <div className="space-y-6 mt-8">
-              <div className="border border-slate-200 rounded-xl p-5">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-slate-900">
-                      Fundraise Up — Head of Product
-                    </h3>
-                    <p className="text-sm text-slate-500 mt-1">
-                      Enterprise fundraising platform
-                    </p>
-                    <p className="text-sm text-slate-600 leading-relaxed mt-3">
-                      Led product strategy and execution for a B2B fundraising platform, rebuilding core payment flows and launching new features that increased user engagement.
-                    </p>
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      <span className="px-3 py-1 text-xs font-medium bg-slate-100 text-slate-700 rounded-full">
-                        B2B SaaS
-                      </span>
-                      <span className="px-3 py-1 text-xs font-medium bg-slate-100 text-slate-700 rounded-full">
-                        Payments
-                      </span>
-                      <span className="px-3 py-1 text-xs font-medium bg-slate-100 text-slate-700 rounded-full">
-                        Fundraising
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="border border-slate-200 rounded-xl p-5">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-slate-900">
-                      Yatta — Course platform
-                    </h3>
-                    <p className="text-sm text-slate-500 mt-1">
-                      Online courses for creators
-                    </p>
-                    <p className="text-sm text-slate-600 leading-relaxed mt-3">
-                      Built a course platform from zero to launch, designing user flows and product strategy for online education delivery.
-                    </p>
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      <span className="px-3 py-1 text-xs font-medium bg-slate-100 text-slate-700 rounded-full">
-                        B2B SaaS
-                      </span>
-                      <span className="px-3 py-1 text-xs font-medium bg-slate-100 text-slate-700 rounded-full">
-                        Online Platforms
-                      </span>
-                      <span className="px-3 py-1 text-xs font-medium bg-slate-100 text-slate-700 rounded-full">
-                        Education
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <ul className="space-y-4 text-base leading-relaxed text-slate-700 list-disc list-inside">
+              <li>
+                Joined a fast-growing online platform shortly after its Series A as a Product Manager and left after Series B as Head of Product. During that time, the company's valuation grew more than 10x (from around $40M to $500M), while we scaled the product, team and customer base.
+              </li>
+              <li>
+                Led product for an online platform handling recurring payments and contributions for large organisations (enterprise segment, high volume, strict compliance).
+              </li>
+              <li>
+                Product leader in B2B fintech / mobility: owned billing, invoicing, pricing and integrations with external finance and reporting systems.
+              </li>
+              <li>
+                Earlier worked as Product Manager and business analyst on ERP tools, reporting and internal systems that reduced manual work and scaled with the business.
+              </li>
+            </ul>
+          </section>
+
+          {/* Who I work with Section */}
+          <section id="who-i-work-with" className="space-y-4">
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Who I work with
+              </p>
+              <h2 className="text-xl lg:text-2xl font-semibold text-slate-900">
+                Who I work with
+              </h2>
             </div>
+            <ul className="space-y-2 text-base leading-relaxed text-slate-700 list-disc list-inside">
+              <li>B2B SaaS and data-heavy products with complex user journeys.</li>
+              <li>Founders and product leaders who want a senior product partner a few hours a month.</li>
+              <li>Teams that feel their product has become heavy and want to simplify without losing depth.</li>
+            </ul>
+          </section>
+
+          {/* How we can work together Section */}
+          <section id="how-we-can-work-together" className="space-y-4">
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                How we can work together
+              </p>
+              <h2 className="text-xl lg:text-2xl font-semibold text-slate-900">
+                How we can work together
+              </h2>
+            </div>
+            <ul className="space-y-2 text-base leading-relaxed text-slate-700 list-disc list-inside">
+              <li>
+                <strong>One-off advisory session</strong> – 60–90 min on Zoom, with a short brief sent in advance.
+              </li>
+              <li>
+                <strong>Monthly mentoring / advisory</strong> – a set number of calls + async comments on docs and product flows.
+              </li>
+              <li>
+                <strong>Focused product sprint</strong> – a short deep dive into one key area (onboarding, checkout, billing, reporting, internal tools).
+              </li>
+            </ul>
+          </section>
+
+          {/* Recent work Section */}
+          <section id="recent-work" className="space-y-4">
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Recent work
+              </p>
+              <h2 className="text-xl lg:text-2xl font-semibold text-slate-900">
+                Recent work (examples)
+              </h2>
+            </div>
+            <ul className="space-y-2 text-base leading-relaxed text-slate-700 list-disc list-inside">
+              <li>Helped a SaaS team see where users were getting lost in key journeys and turn that into a small set of UX changes they could ship quickly.</li>
+              <li>Worked with a data-heavy product to make the interface less "for experts only" and easier for non-technical staff to trust and use.</li>
+              <li>Mentored early-stage founders on roadmap and focus so the product matched a clear target user, not "everyone at once".</li>
+            </ul>
           </section>
 
           {/* Contact Section */}
-          <section id="contact" className="scroll-mt-24 space-y-6">
+          <section id="contact" className="space-y-4">
             <div className="space-y-2">
-              <p className="text-xs uppercase tracking-widest text-slate-500">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Contact
               </p>
-              <h2 className="text-2xl lg:text-3xl font-semibold text-slate-900">
-                Ready to talk?
+              <h2 className="text-xl lg:text-2xl font-semibold text-slate-900">
+                Let's talk
               </h2>
             </div>
-            <p className="text-base text-slate-600 leading-relaxed">
-              If you'd like to work together or talk through your product challenges, email me.
-            </p>
-            <div className="space-y-3">
-              <a
-                href="mailto:aklimabaiguisova@example.com"
-                className="inline-flex items-center justify-center rounded-full bg-slate-900 text-slate-50 px-5 py-2 text-sm font-medium hover:bg-slate-800 transition-colors"
-              >
-                aklimabaiguisova@example.com
-              </a>
-              <p className="text-sm text-slate-500">
-                I usually reply within a couple of days.
+            <div className="space-y-4 text-base leading-relaxed text-slate-700">
+              <p>
+                If you're building a SaaS or data-driven product and want a senior product brain on your side, I'd be happy to talk.
               </p>
+              <div className="space-y-2">
+                <p>
+                  <span className="font-medium">Email:</span>{' '}
+                  <a
+                    href="mailto:baiguisova@gmail.com"
+                    className="text-slate-800 hover:underline"
+                  >
+                    baiguisova@gmail.com
+                  </a>
+                </p>
+                <p>
+                  <span className="font-medium">LinkedIn:</span>{' '}
+                  <a
+                    href="https://www.linkedin.com/in/aklima/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-slate-800 hover:underline"
+                  >
+                    linkedin.com/in/aklima/
+                  </a>
+                </p>
+                <p className="text-slate-600">
+                  Based in Europe, working remotely with teams worldwide.
+                </p>
+              </div>
             </div>
           </section>
         </div>
