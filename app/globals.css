@@ -2,25 +2,31 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a; /* Slate 900 */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
+  
+  /* Asmodee-inspired Corporate Palette */
+  --color-corporate-blue: #003366; /* Deep Navy */
+  --color-corporate-blue-light: #E6F0F9; /* Very light blue for backgrounds */
+  --color-corporate-accent: #0056b3; /* Brighter blue for links/buttons */
+  --color-corporate-text: #1e293b; /* Slate 800 */
+  --color-corporate-text-light: #64748b; /* Slate 500 */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff; /* Keeping it light for this specific corporate style request, or strictly dark if needed, but corporate usually defaults to clean light */
+    --foreground: #0f172a;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
