@@ -277,17 +277,17 @@ export default function Home() {
 
         {/* Contact Section */}
         <section id="contact" className="space-y-6 lg:space-y-8">
-          <h2 className="text-3xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-tight">
-            Let's talk
-          </h2>
-          <div className="bg-slate-50/50 rounded-2xl lg:rounded-3xl p-8 lg:p-12 lg:p-16 space-y-8 lg:space-y-10 max-w-4xl">
+          <div className="bg-slate-100/60 rounded-2xl lg:rounded-3xl border border-slate-200/50 p-8 lg:p-12 lg:p-16 space-y-8 lg:space-y-10 max-w-4xl">
+            <h2 className="text-3xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-tight">
+              Let's talk
+            </h2>
             <p className="text-base lg:text-lg leading-relaxed text-slate-700">
               If you're building a SaaS or data-driven product and want a senior product brain on your side, I'd be happy to talk.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <a
                 href="mailto:baiguisova@gmail.com"
-                className="inline-flex items-center justify-center rounded-full bg-slate-900 px-8 py-4 lg:py-5 text-base font-medium text-white hover:bg-slate-800 transition-colors duration-200 min-h-[48px]"
+                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-slate-900 to-slate-700 px-8 py-4 lg:py-5 text-base font-medium text-white hover:from-slate-800 hover:to-slate-600 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 min-h-[48px]"
               >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -298,7 +298,7 @@ export default function Home() {
                 href="https://www.linkedin.com/in/aklima/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-full bg-white border border-slate-200 px-8 py-4 lg:py-5 text-base font-medium text-slate-900 hover:border-slate-300 hover:bg-slate-50 transition-colors duration-200 min-h-[48px]"
+                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-white to-slate-50 border border-slate-200 px-8 py-4 lg:py-5 text-base font-medium text-slate-900 hover:border-slate-300 hover:from-slate-50 hover:to-slate-100 transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105 min-h-[48px]"
               >
                 <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
