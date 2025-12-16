@@ -1,10 +1,8 @@
 'use client';
 import ScrollToTop from '../components/ScrollToTop';
-import SideNavigation from '../components/SideNavigation';
 
 import { FormEvent } from 'react';
 import Image from 'next/image';
-import ScrollToTop from '../components/ScrollToTop';
 
 const companyLogos: Record<string, { src: string; alt: string }> = {
   'Fundraise Up': { src: '/Images/Logo/Fundraise Up.png', alt: 'Fundraise Up logo' },
