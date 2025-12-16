@@ -41,7 +41,7 @@ function HostExperienceItem({
   );
 }
 
-export default function FundraisingQuickWinsPage() {
+export default function Quickwins() {
   const currentYear = new Date().getFullYear();
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
