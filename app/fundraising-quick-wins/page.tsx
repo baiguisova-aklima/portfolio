@@ -1,4 +1,6 @@
 'use client';
+import ScrollToTop from '../components/ScrollToTop';
+import SideNavigation from '../components/SideNavigation';
 
 import { FormEvent } from 'react';
 import Image from 'next/image';
