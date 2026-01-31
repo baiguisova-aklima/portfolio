@@ -83,16 +83,16 @@ export default function Quickwins() {
       {/* Local sticky nav for this page */}
       <header className="sticky top-0 z-40 bg-white/95 border-b border-slate-200/60 backdrop-blur-sm">
         <nav className="max-w-5xl mx-auto px-4 lg:px-6 py-3 flex items-center justify-between gap-4">
-          <div className="flex items-center">
+          <a href="#hero" className="flex items-center">
             <Image
               src="/Images/Logo_QWL.png"
               alt="Fundraising Quick Wins Lab logo"
               width={420}
               height={96}
-              className="h-20 w-auto"
+              className="h-20 w-auto cursor-pointer"
               priority
             />
-          </div>
+          </a>
           <div className="hidden md:flex items-center gap-6 text-xs lg:text-sm text-slate-500">
             <a href="#hero" className="hover:text-slate-900 transition-colors">
               About

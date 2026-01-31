@@ -143,7 +143,7 @@ export default function Home() {
                     </div>
                     <div className="flex min-w-0 flex-1 pt-0.5">
                       <p className="text-base lg:text-lg leading-relaxed text-slate-700">
-                        Joined a fast-growing online platform shortly after its Series A as a Product Manager and left after Series B as Head of Product. During that time, the company's valuation grew more than 10x (from around $40M to $500M), while we scaled the product, team and customer base.
+                        <a href="https://fundraiseup.com/" target="_blank" rel="noopener noreferrer" className="font-medium text-slate-900 underline decoration-slate-400 underline-offset-2 hover:decoration-slate-600">Fundraise Up</a> is a worldwide SaaS donation platform for nonprofits. I joined right after Series A and owned product for the whole platform (excluding CRM integrations). Later I became Head of Product and built a team of 10 PMs. During my time, the company raised a $70M Series B, and valuation grew ~10x (from ~$40M to $500M). I led platform and payments work (security, AI, enterprise compliance) and improved conversion and average donation size through experiments.
                       </p>
                     </div>
                   </div>
@@ -158,22 +158,7 @@ export default function Home() {
                     </div>
                     <div className="flex min-w-0 flex-1 pt-0.5">
                       <p className="text-base lg:text-lg leading-relaxed text-slate-700">
-                        Led product for an online platform handling recurring payments and contributions for large organisations (enterprise segment, high volume, strict compliance).
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div className="relative pb-8">
-                  <span className="absolute left-3 top-3 -ml-px h-full w-px bg-slate-200" aria-hidden="true"></span>
-                  <div className="relative flex space-x-4">
-                    <div className="flex h-6 w-6 items-center justify-center">
-                      <span className="h-1.5 w-1.5 rounded-full bg-slate-400 ring-4 ring-white"></span>
-                    </div>
-                    <div className="flex min-w-0 flex-1 pt-0.5">
-                      <p className="text-base lg:text-lg leading-relaxed text-slate-700">
-                        Product leader in B2B fintech / mobility: owned billing, invoicing, pricing and integrations with external finance and reporting systems.
+                        <a href="https://www.gett.com/uk" target="_blank" rel="noopener noreferrer" className="font-medium text-slate-900 underline decoration-slate-400 underline-offset-2 hover:decoration-slate-600">Gett</a> is a ride-hailing company in the UK and Israel, focused on business and fleets. I owned fleet products: settlements and payouts, billing, invoicing, pricing, and integrations with external finance and reporting systems. I also supported ITGC compliance for IPO readiness.
                       </p>
                     </div>
                   </div>
@@ -187,7 +172,7 @@ export default function Home() {
                     </div>
                     <div className="flex min-w-0 flex-1 pt-0.5">
                       <p className="text-base lg:text-lg leading-relaxed text-slate-700">
-                        Earlier worked as Product Manager and business analyst on ERP tools, reporting and internal systems that reduced manual work and scaled with the business.
+                        Earlier, I worked in a large industrial manufacturer (graphite and carbon materials) and in an IT services company building ERP systems for the energy sector. I delivered ERP tools, reporting, and internal systems that reduced manual work and scaled with the business.
                       </p>
                     </div>
                   </div>
