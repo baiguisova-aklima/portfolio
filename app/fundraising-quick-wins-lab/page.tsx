@@ -113,16 +113,16 @@ export default function Quickwins() {
           </a>
           <div className="hidden md:flex items-center gap-6 text-xs lg:text-sm text-slate-500">
             <a href="#free-options" className="hover:text-indigo-700 transition-colors">
-              Free options
+              Formats
             </a>
             <a href="#how-it-works" className="hover:text-indigo-700 transition-colors">
-              What format
+              How it works
             </a>
             <a href="#hosts" className="hover:text-indigo-700 transition-colors">
-              Who runs it
+              Hosts
             </a>
             <a href="#contact" className="hover:text-indigo-700 transition-colors">
-              Let's talk
+              Contact
             </a>
           </div>
         </nav>
@@ -154,7 +154,7 @@ export default function Quickwins() {
               href="#free-options"
               className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-blue-800 to-indigo-700 px-7 py-3 text-sm font-medium text-white shadow-sm ring-1 ring-indigo-900/10 hover:from-blue-700 hover:to-indigo-600 hover:ring-indigo-800/20 transition-all duration-300 ease-out hover:-translate-y-[1px] hover:shadow-md"
             >
-              Choose free session
+              Choose a session
             </a>
             <a
               href="#contact"
@@ -170,32 +170,35 @@ export default function Quickwins() {
         </section>
 
         {/* FREE OPTIONS */}
-        <section id="free-options" className="space-y-6 border-t border-slate-200/60 pt-14">
-          <span className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-[0.65rem] font-medium uppercase tracking-[0.18em] text-slate-500">
-            Free support
+        <section
+          id="free-options"
+          className="space-y-6 rounded-[2rem] border border-indigo-800/20 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 px-6 py-10 shadow-[0_25px_70px_-35px_rgba(15,23,42,0.8)] lg:-mx-8 lg:px-10 lg:py-12 xl:-mx-14 xl:px-14"
+        >
+          <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-[0.65rem] font-medium uppercase tracking-[0.18em] text-slate-200 ring-1 ring-white/20">
+            Shared expertise
           </span>
-          <h2 className="text-2xl lg:text-3xl font-semibold text-slate-900">Choose your free format</h2>
-          <p className="text-base lg:text-lg text-slate-700 leading-relaxed">
-            Supporters come with good intentions. The experience should help them follow through.
+          <h2 className="text-2xl lg:text-3xl font-semibold text-white">Choose your support format</h2>
+          <p className="text-base lg:text-lg text-slate-200 leading-relaxed">
+            We have spent many years building digital products, and now we want to share that experience with teams doing good.
           </p>
 
           <div className="grid gap-6 lg:gap-7 lg:grid-cols-2">
-            <article className="rounded-3xl border border-slate-200/40 bg-white p-6 lg:p-7 space-y-5 shadow-sm shadow-slate-200/50">
+            <article className="rounded-3xl border border-white/15 bg-white/5 p-6 lg:p-7 space-y-5 shadow-lg shadow-black/20 backdrop-blur-sm">
               <div className="space-y-2">
-                <h3 className="text-xl lg:text-2xl font-semibold text-slate-900">
-                  Deep-dive on your flow (Free · 2 x 45 min)
+                <h3 className="text-xl lg:text-2xl font-semibold text-white">
+                  Deep-dive on your flow (2 x 45 min)
                 </h3>
-                <p className="text-sm lg:text-base text-slate-700 leading-relaxed">
+                <p className="text-sm lg:text-base text-slate-200 leading-relaxed">
                   We review your real online fundraising flow and give your team a focused quick-win plan for your top 3 priorities.
                 </p>
               </div>
 
-              <details className="group rounded-2xl border border-slate-200/50 bg-slate-50/50 p-4">
-                <summary className="cursor-pointer list-none text-sm lg:text-base font-medium text-slate-900 flex items-center justify-between">
+              <details className="group rounded-2xl border border-white/15 bg-white/5 p-4">
+                <summary className="cursor-pointer list-none text-sm lg:text-base font-medium text-white flex items-center justify-between">
                   <span>What is included</span>
-                  <span className="text-slate-500 transition-transform group-open:rotate-45">+</span>
+                  <span className="text-slate-300 transition-transform group-open:rotate-45">+</span>
                 </summary>
-                <ul className="mt-3 space-y-2 text-sm lg:text-base text-slate-700 leading-relaxed">
+                <ul className="mt-3 space-y-2 text-sm lg:text-base text-slate-200 leading-relaxed">
                   <li>• Session 1 (45 min): mission, goals, donor context, and top 3 challenge areas</li>
                   <li>• Pre-work by us (2-5h, up to ~2 weeks turnaround) based on your materials and public channels</li>
                   <li>• Session 2 (45 min): best practices, quick-win recommendations, optional prototype/demo</li>
@@ -203,12 +206,12 @@ export default function Quickwins() {
                 </ul>
               </details>
 
-              <details className="group rounded-2xl border border-slate-200/50 bg-slate-50/50 p-4">
-                <summary className="cursor-pointer list-none text-sm lg:text-base font-medium text-slate-900 flex items-center justify-between">
+              <details className="group rounded-2xl border border-white/15 bg-white/5 p-4">
+                <summary className="cursor-pointer list-none text-sm lg:text-base font-medium text-white flex items-center justify-between">
                   <span>Who should join</span>
-                  <span className="text-slate-500 transition-transform group-open:rotate-45">+</span>
+                  <span className="text-slate-300 transition-transform group-open:rotate-45">+</span>
                 </summary>
-                <ul className="mt-3 space-y-2 text-sm lg:text-base text-slate-700 leading-relaxed">
+                <ul className="mt-3 space-y-2 text-sm lg:text-base text-slate-200 leading-relaxed">
                   <li>• 1-2 people who own online fundraising performance</li>
                   <li>• Person who manages donation channels (site, forms, email, social, ads)</li>
                   <li>• Optional: person handling analytics and CRM related to donor journey</li>
@@ -216,29 +219,29 @@ export default function Quickwins() {
               </details>
 
               <a
-                href={buildSessionMailto('Free Deep-dive on your flow (2 x 45 min)')}
-                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-blue-800 to-indigo-700 px-6 py-3 text-sm font-medium text-white shadow-sm ring-1 ring-indigo-900/10 hover:from-blue-700 hover:to-indigo-600 transition-all duration-300 ease-out hover:-translate-y-[1px] hover:shadow-md"
+                href={buildSessionMailto('Deep-dive on your flow (2 x 45 min)')}
+                className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-medium text-slate-900 shadow-sm ring-1 ring-white/50 hover:bg-slate-100 transition-all duration-300 ease-out hover:-translate-y-[1px] hover:shadow-md"
               >
                 Contact us about this option
               </a>
             </article>
 
-            <article className="rounded-3xl border border-slate-200/40 bg-white p-6 lg:p-7 space-y-5 shadow-sm shadow-slate-200/50">
+            <article className="rounded-3xl border border-white/15 bg-white/5 p-6 lg:p-7 space-y-5 shadow-lg shadow-black/20 backdrop-blur-sm">
               <div className="space-y-2">
-                <h3 className="text-xl lg:text-2xl font-semibold text-slate-900">
-                  Quick guidance call (Free · 45 min)
+                <h3 className="text-xl lg:text-2xl font-semibold text-white">
+                  Quick guidance call (45 min)
                 </h3>
-                <p className="text-sm lg:text-base text-slate-700 leading-relaxed">
+                <p className="text-sm lg:text-base text-slate-200 leading-relaxed">
                   We share practical online fundraising best practices and answer the questions you and your team are dealing with right now.
                 </p>
               </div>
 
-              <details className="group rounded-2xl border border-slate-200/50 bg-slate-50/50 p-4">
-                <summary className="cursor-pointer list-none text-sm lg:text-base font-medium text-slate-900 flex items-center justify-between">
+              <details className="group rounded-2xl border border-white/15 bg-white/5 p-4">
+                <summary className="cursor-pointer list-none text-sm lg:text-base font-medium text-white flex items-center justify-between">
                   <span>What is included</span>
-                  <span className="text-slate-500 transition-transform group-open:rotate-45">+</span>
+                  <span className="text-slate-300 transition-transform group-open:rotate-45">+</span>
                 </summary>
-                <ul className="mt-3 space-y-2 text-sm lg:text-base text-slate-700 leading-relaxed">
+                <ul className="mt-3 space-y-2 text-sm lg:text-base text-slate-200 leading-relaxed">
                   <li>• 45-minute expert conversation focused on your priorities</li>
                   <li>• Relevant industry patterns and common mistakes to avoid</li>
                   <li>• Q&A on your current online fundraising setup</li>
@@ -246,12 +249,12 @@ export default function Quickwins() {
                 </ul>
               </details>
 
-              <details className="group rounded-2xl border border-slate-200/50 bg-slate-50/50 p-4">
-                <summary className="cursor-pointer list-none text-sm lg:text-base font-medium text-slate-900 flex items-center justify-between">
+              <details className="group rounded-2xl border border-white/15 bg-white/5 p-4">
+                <summary className="cursor-pointer list-none text-sm lg:text-base font-medium text-white flex items-center justify-between">
                   <span>Who should join</span>
-                  <span className="text-slate-500 transition-transform group-open:rotate-45">+</span>
+                  <span className="text-slate-300 transition-transform group-open:rotate-45">+</span>
                 </summary>
-                <ul className="mt-3 space-y-2 text-sm lg:text-base text-slate-700 leading-relaxed">
+                <ul className="mt-3 space-y-2 text-sm lg:text-base text-slate-200 leading-relaxed">
                   <li>• 1-2 people who own online fundraising performance</li>
                   <li>• Person who manages donation channels (site, forms, email, social, ads)</li>
                   <li>• Optional: person handling analytics and CRM related to donor journey</li>
@@ -259,8 +262,8 @@ export default function Quickwins() {
               </details>
 
               <a
-                href={buildSessionMailto('Free Quick guidance call (45 min)')}
-                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-blue-800 to-indigo-700 px-6 py-3 text-sm font-medium text-white shadow-sm ring-1 ring-indigo-900/10 hover:from-blue-700 hover:to-indigo-600 transition-all duration-300 ease-out hover:-translate-y-[1px] hover:shadow-md"
+                href={buildSessionMailto('Quick guidance call (45 min)')}
+                className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-medium text-slate-900 shadow-sm ring-1 ring-white/50 hover:bg-slate-100 transition-all duration-300 ease-out hover:-translate-y-[1px] hover:shadow-md"
               >
                 Contact us about this option
               </a>
@@ -540,7 +543,7 @@ export default function Quickwins() {
 
         {/* REQUEST A SESSION / CONTACT */}
         <section id="contact" className="space-y-6 border-t border-slate-200/60 pt-14 pb-8">
-          <div className="bg-slate-100/60 rounded-2xl lg:rounded-3xl border border-slate-200/50 p-7 lg:p-10 space-y-7 lg:space-y-8 max-w-4xl">
+          <div className="bg-slate-100/60 rounded-2xl lg:rounded-3xl border border-slate-200/50 p-7 space-y-7 lg:-mx-8 lg:p-10 lg:space-y-8 xl:-mx-14 xl:px-14">
             <div className="space-y-3">
               <h2 className="text-2xl lg:text-3xl font-semibold text-slate-900">Let's talk</h2>
               <p className="text-base lg:text-lg text-slate-700 leading-relaxed">
@@ -601,14 +604,14 @@ export default function Quickwins() {
               <label className="block text-xs font-medium text-slate-600">Session type</label>
               <select
                 name="sessionType"
-                defaultValue="Request: Free Deep-dive on your flow (2 x 45 min)"
+                defaultValue="Request: Deep-dive on your flow (2 x 45 min)"
                 className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-300"
               >
-                <option value="Request: Free Deep-dive on your flow (2 x 45 min)">
-                  Free Deep-dive on your flow (2 x 45 min)
+                <option value="Request: Deep-dive on your flow (2 x 45 min)">
+                  Deep-dive on your flow (2 x 45 min)
                 </option>
-                <option value="Request: Free Quick guidance call (45 min)">
-                  Free Quick guidance call (45 min)
+                <option value="Request: Quick guidance call (45 min)">
+                  Quick guidance call (45 min)
                 </option>
               </select>
             </div>
