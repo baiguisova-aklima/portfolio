@@ -637,13 +637,10 @@ export default function Quickwins() {
             <div className="space-y-2 pt-2">
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-blue-800 to-indigo-700 px-8 py-3.5 text-sm font-medium text-white shadow-sm ring-1 ring-indigo-900/10 hover:from-blue-700 hover:to-indigo-600 hover:ring-indigo-800/20 transition-all duration-300 ease-out hover:-translate-y-[1px] hover:shadow-md min-h-[44px]"
+                className="mb-4 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-blue-800 to-indigo-700 px-8 py-3.5 text-sm font-medium text-white shadow-sm ring-1 ring-indigo-900/10 hover:from-blue-700 hover:to-indigo-600 hover:ring-indigo-800/20 transition-all duration-300 ease-out hover:-translate-y-[1px] hover:shadow-md min-h-[44px]"
               >
                 Send request
               </button>
-              <p className="text-xs lg:text-sm text-slate-500 leading-relaxed">
-                We’ll reply with a couple of time options and a simple pre-work template.
-              </p>
               <p className="text-xs lg:text-sm text-slate-500 leading-relaxed">
                 Or email me directly at{' '}
                 <a href="mailto:baiguisova@gmail.com" className="text-indigo-700 underline underline-offset-2 hover:text-indigo-800">
