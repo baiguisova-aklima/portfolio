@@ -4,17 +4,17 @@ import { CSSProperties, PointerEvent, useEffect, useRef, useState } from 'react'
 import styles from './page.module.css';
 
 const coupons = [
-  { id: 12, image: '/images/coupons/coupon-12.jpg', alt: 'Купон на прогулку с собаками' },
-  { id: 1, image: '/images/coupons/coupon-01.jpg', alt: 'Купон на массаж лица и спа-уход' },
-  { id: 2, image: '/images/coupons/coupon-02.jpg', alt: 'Купон на массаж пяточек' },
-  { id: 3, image: '/images/coupons/coupon-03.jpg', alt: 'Купон на массаж плеч' },
-  { id: 5, image: '/images/coupons/coupon-05.jpg', alt: 'Купон на любое блюдо на заказ' },
-  { id: 6, image: '/images/coupons/coupon-06.jpg', alt: 'Купон на три часа тишины' },
-  { id: 7, image: '/images/coupons/coupon-07.jpg', alt: 'Купон на романтичный пикник' },
-  { id: 8, image: '/images/coupons/coupon-08.jpg', alt: 'Купон на день комплиментов' },
-  { id: 9, image: '/images/coupons/coupon-09.jpg', alt: 'Купон на поездку за город' },
-  { id: 10, image: '/images/coupons/coupon-10.jpg', alt: 'Купон на целый день без моей вредной привычки' },
-  { id: 11, image: '/images/coupons/coupon-11.jpg', alt: 'Купон на совместный поход в компьютерный клуб' },
+  { id: 12, image: '/Images/coupons/coupon-12.jpg', alt: 'Купон на прогулку с собаками' },
+  { id: 1, image: '/Images/coupons/coupon-01.jpg', alt: 'Купон на массаж лица и спа-уход' },
+  { id: 2, image: '/Images/coupons/coupon-02.jpg', alt: 'Купон на массаж пяточек' },
+  { id: 3, image: '/Images/coupons/coupon-03.jpg', alt: 'Купон на массаж плеч' },
+  { id: 5, image: '/Images/coupons/coupon-05.jpg', alt: 'Купон на любое блюдо на заказ' },
+  { id: 6, image: '/Images/coupons/coupon-06.jpg', alt: 'Купон на три часа тишины' },
+  { id: 7, image: '/Images/coupons/coupon-07.jpg', alt: 'Купон на романтичный пикник' },
+  { id: 8, image: '/Images/coupons/coupon-08.jpg', alt: 'Купон на день комплиментов' },
+  { id: 9, image: '/Images/coupons/coupon-09.jpg', alt: 'Купон на поездку за город' },
+  { id: 10, image: '/Images/coupons/coupon-10.jpg', alt: 'Купон на целый день без моей вредной привычки' },
+  { id: 11, image: '/Images/coupons/coupon-11.jpg', alt: 'Купон на совместный поход в компьютерный клуб' },
   { id: 13, image: '/photos/2026-07-14%2012.40.39.jpg', alt: 'Посмотреть наши фото' },
 ];
 
