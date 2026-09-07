@@ -1,7 +1,8 @@
 // Original code-drawn pixel art. All animation uses the supplied clock.
+import { cleanerAt } from './ozersk';
 type Ctx = CanvasRenderingContext2D;
 export type Pose = { x: number; y: number; moving: boolean; facing: string };
-export type VisualState = { scene: number; step: number; mode: string; line: string; elapsed: number; action: number; player: Pose };
+export type VisualState = { scene: number; step: number; mode: string; line: string; elapsed: number; action: number; player: Pose; cleaner?: ReturnType<typeof cleanerAt> };
 const ink = '#252c38';
 function box(c: Ctx, x: number, y: number, w: number, h: number, color: string) {
   c.fillStyle = color; c.fillRect(Math.round(x), Math.round(y), w, h);
@@ -71,15 +72,20 @@ export function renderGame(c:Ctx,s:VisualState,t:number) {
     floor(c,'#bccbd0');box(c,380,296,440,9,'#647b83');
     for(let i=0;i<4;i++){box(c,417+i*18,338,11,45,'#85969c');box(c,417+i*18,338,3,45,'#aab9bb');}box(c,410,382,95,5,'#72868e');
     box(c,765,316,60,20,'#527581');box(c,772,320,46,4,'#8fafb2');box(c,806,377,3,48,'#9a7858');box(c,796,425,24,5,'#6c5c50');
-    flower(c,688,399,t,Math.min(step+(dialog&&step<3?1:0),3),dialog&&step<3?Math.min(s.action/850,1):0);
-    human(c,790,404,t,'#80a5b7','#817364',false,Math.floor(t/2200)%2?'right':'left');label(c,'УБОРЩИЦА',790,448,'#4a6070',9);
-    if(step>=3)desk(c,251,379,t);if(step>=4){box(c,835,323,40,111,'#496574');box(c,840,330,30,93,'#7d9d9d');label(c,'EXIT',855,367);}
+    const tilt=s.mode==='pot'?Math.min(s.elapsed/950,1)*Math.PI*.65:step>=4?Math.PI*.65:0;
+    c.save();c.translate(688,399);c.rotate(tilt);flower(c,0,0,t,tilt?0:Math.min(step+(dialog&&step<3?1:0),3),dialog&&step<3?Math.min(s.action/850,1):0);c.restore();
+    if(tilt){for(let i=0;i<36;i++)box(c,640+(i*13)%44,422+(i*7)%10,3,2,'#795136');}
+    if(step===4||s.mode==='pot'&&s.elapsed>850){const fall=s.mode==='pot'?Math.min((s.elapsed-850)/400,1):1;box(c,656,401+fall*24,19,10,'#f0dfb3');box(c,656,401+fall*24,19,2,'#bca57b');}
+    const cleaner=s.cleaner??cleanerAt(t);human(c,cleaner.x,cleaner.y,t,'#80a5b7','#817364',cleaner.x>791&&cleaner.x<834,cleaner.facing);label(c,'УБОРЩИЦА',cleaner.x,cleaner.y+44,'#4a6070',9);
+    box(c,cleaner.x+14,cleaner.y-17,3,44,'#98764f');box(c,cleaner.x+8+Math.sin(t/250)*3,cleaner.y+26,24,5,'#655b54');
+    if(step>=5)desk(c,251,379,t);if(step>=6){box(c,835,323,40,111,'#496574');box(c,840,330,30,93,'#7d9d9d');label(c,'EXIT',855,367);}
     for(let i=0;i<48;i++)box(c,(i*71+t/65)%900,(i*47+t/45)%285,2+i%2,2+i%2,'#eff6eeaa');
     for(let i=0;i<6;i++)box(c,638+Math.sin(i+t/900)*6,53-((t/70+i*9)%50),12+i*2,6,'#d9e2e350');
   }else if(scene===1){
     room(c,'#bdac9a','#877970');for(let x=135;x<760;x+=125)windowArt(c,x,178,78,90);
     for(let i=0;i<65;i++)box(c,(i*89+t/8)%900,(i*37+t/3)%127,1,7,'#b0d1df80');
-    desk(c,158,330,t);desk(c,395,330,t);desk(c,610,330,t);flower(c,770,372,t,0);human(c,620,350,t,'#63778c','#805738');
+    desk(c,158,330,t);desk(c,395,330,t);desk(c,610,330,t);flower(c,770,372,t,0);if(s.mode!=='balcony')human(c,620,350,t,'#63778c','#805738');
+    box(c,695,436,190,57,'#667988');box(c,694,490,192,5,'#bec4ba');for(let x=701;x<885;x+=19)box(c,x,464,3,27,'#b0bcb8');box(c,694,461,192,4,'#d0ccba');
     if(Math.floor(t/2400)%2===0){box(c,574,276,94,22,'#f3e9d0');label(c,'Пойдём?',621,291,'#524844',12);}
     box(c,82,413,736,3,'#c7b49b');
   }else if(scene===2){
@@ -118,6 +124,13 @@ export function renderGame(c:Ctx,s:VisualState,t:number) {
   }
 
   let p={...s.player};
+  if(s.mode==='balcony'){
+    const elapsed=s.elapsed,walkOut=Math.min(elapsed/1600,1),walkBack=Math.max(0,Math.min((elapsed-4400)/1600,1)),progress=walkOut*(1-walkBack);
+    p.x+=(765-p.x)*progress;p.y+=(447-p.y)*progress;p.moving=elapsed<1600||elapsed>4400;p.facing=elapsed>4400?'up':'right';
+    human(c,620+(817-620)*progress,350+(447-350)*progress,t,'#63778c','#805738',p.moving,elapsed>4400?'up':'left');
+    if(elapsed>1600&&elapsed<4400){for(const x of [765,817]){box(c,x+10,432,8,2,'#e5dac2');box(c,x+18,432,2,2,'#c79565');for(let i=0;i<5;i++){const rise=((elapsed-1600)/35+i*9)%43;box(c,x+18+Math.sin(rise/8)*5,427-rise,4+i%2*2,3,'#e3e3dc70');}}}
+  }
+  if(s.mode==='note'){p.moving=false;if(s.elapsed>800)label(c,'…',p.x,p.y-47,'#fff3ce',22);if(s.elapsed>1100&&s.elapsed<1900)box(c,p.x+18,p.y-5+(s.elapsed-1100)/20,3,3,'#795136');}
   if(s.mode==='fetch'){
     const e=s.elapsed,landing={x:420,y:460};
     const chase=Math.max(0,Math.min((e-350)/1250,1)),back=Math.max(0,Math.min((e-1900)/1600,1));
@@ -137,7 +150,7 @@ export function renderGame(c:Ctx,s:VisualState,t:number) {
   }
   if(scene===3&&step===1&&s.mode==='playing')bike(c,p.x,p.y,t,true);else human(c,p.x,p.y,t,scene===0?'#e6e8d6':'#548795','#49362d',p.moving,p.facing);
   if(dialog){
-    if(scene===0&&step===3||scene===1&&step===1)for(let i=0;i<4;i++)label(c,['HTML','CSS','JavaScript','+1 Coding'][i],300+(scene===1?140:0),325-((s.action/25+i*21)%100),'#b2efb4',12);
+    if(scene===0&&step===5||scene===1&&step===1)for(let i=0;i<4;i++)label(c,['HTML','CSS','JavaScript','+1 Coding'][i],300+(scene===1?140:0),325-((s.action/25+i*21)%100),'#b2efb4',12);
     if(scene===3&&step===0)bike(c,150+Math.min(s.action/2200,1)*470,358,t,true);
     if(scene===6&&s.action>250)for(let i=0;i<65;i++)box(c,(i*71+s.action/28)%900,(i*43+s.action/10)%350,3,6,['#ffe391','#edb0a2','#eaf1da'][i%3]);
     if(scene===0&&step===2&&line.includes('НАХУЙ')){box(c,641,299,94,44,'#eee1b8');label(c,'FAFO',688,327,'#705540',16);}

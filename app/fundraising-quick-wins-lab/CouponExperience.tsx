@@ -3,16 +3,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { DIALOG, GAME_TEXT, OBJECTIVES } from './gameData';
 import styles from './page.module.css';
+import { cleanerAt } from './ozersk';
 import { renderGame } from './gameArt';
 
 const W = 900, H = 520, PLAYER_SPEED = 190;
-type Mode = 'start' | 'intro' | 'playing' | 'dialog' | 'transition' | 'ending' | 'fetch' | 'final';
+type Mode = 'start' | 'intro' | 'playing' | 'dialog' | 'transition' | 'ending' | 'fetch' | 'pot' | 'balcony' | 'note' | 'final';
 type Point = { x: number; y: number };
 type Target = Point & { label: string; key: string };
 const STARTS: Point[] = [{x:130,y:390},{x:130,y:390},{x:120,y:400},{x:120,y:390},{x:120,y:395},{x:180,y:390},{x:170,y:400},{x:450,y:430}];
 
 function targetFor(scene:number,step:number):Target|null{
-  if(scene===0)return step<3?{x:688,y:405,key:'plant',label:'ВЫСЫПАТЬ ЗЕМЛЮ'}:step===3?{x:302,y:375,key:'computer',label:'КАЧАТЬ SKILL TREE'}:{x:855,y:405,key:'exit',label:'УВОЛИТЬСЯ'};
+  if(scene===0)return step===3?{x:688,y:405,key:'pot',label:'ПЕРЕВЕРНУТЬ ГОРШОК'}:step===4?{x:665,y:425,key:'note',label:'ПРОЧИТАТЬ ЗАПИСКУ'}:step<3?{x:688,y:405,key:'plant',label:'ВЫСЫПАТЬ ЗЕМЛЮ'}:step===5?{x:302,y:375,key:'computer',label:'КАЧАТЬ SKILL TREE'}:{x:855,y:405,key:'exit',label:'УВОЛИТЬСЯ'};
   if(scene===1)return step===0?{x:620,y:350,key:'german',label:'ПОЙТИ С ГЕРМАНОМ'}:{x:445,y:340,key:'office',label:'ПИСАТЬ КОД'};
   if(scene===2)return [{x:690,y:350,key:'aklima',label:'ПОЗНАКОМИТЬСЯ'},{x:295,y:380,key:'food',label:'ПОКОРМИТЬ ЕВУ'},{x:455,y:390,key:'pet',label:'ПОГЛАДИТЬ ЕВУ'},{x:445,y:370,key:'save',label:'СПАСТИ ДИВАН'},{x:690,y:350,key:'kiss',label:'ПОДОЙТИ К АКЛИМЕ'}][Math.min(step,4)];
   if(scene===3)return step===0?{x:148,y:400,key:'bike',label:'СЕСТЬ НА БАЙК'}:{x:738,y:390,key:'shrimp',label:'СЪЕСТЬ КРЕВЕТКИ'};
@@ -25,6 +26,8 @@ function homeTarget(p:Point){return HOME_TARGETS.map(item=>({item,d:Math.hypot(p
 export default function CouponExperience(){
   const canvasRef=useRef<HTMLCanvasElement>(null),keys=useRef(new Set<string>()),player=useRef<Point>({...STARTS[0]}),actionLock=useRef(false),afterDialog=useRef<null|(()=>void)>(null),audio=useRef<AudioContext|null>(null);
   const stateRef=useRef({scene:0,step:0,mode:'start' as Mode});
+  const [watching,setWatching]=useState(true),[caught,setCaught]=useState(false);
+  const watchRef=useRef(true);
   const nearbyRef=useRef<string|null>(null);
   const animation=useRef({started:0, action:0, facing:'down', line:''});
   const timers=useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -35,18 +38,31 @@ export default function CouponExperience(){
   useEffect(()=>{animation.current.line=dialog[dialogIndex]??'';},[dialog,dialogIndex]);
   const beep=useCallback((frequency=330,duration=.07)=>{if(muted)return;try{audio.current??=new AudioContext();const oscillator=audio.current.createOscillator(),gain=audio.current.createGain();oscillator.type='square';oscillator.frequency.value=frequency;gain.gain.value=.025;oscillator.connect(gain);gain.connect(audio.current.destination);oscillator.start();oscillator.stop(audio.current.currentTime+duration);}catch{}},[muted]);
   const showDialog=useCallback((lines:readonly string[],done?:()=>void)=>{animation.current.action=performance.now();keys.current.clear();actionLock.current=true;setDialog(lines);setDialogIndex(0);afterDialog.current=done??null;setMode('dialog');beep(440);later(()=>{actionLock.current=false;},180);},[beep]);
-  const goScene=useCallback((next:number)=>{player.current={...STARTS[next]};setScene(next);setStep(0);setMode('transition');beep(180,.12);later(()=>setMode('playing'),900);},[beep]);
+  const goScene=useCallback((next:number)=>{player.current={...STARTS[next]};setScene(next);setStep(0);setMode('transition');beep(180,.12);},[beep]);
   const interact=useCallback(()=>{if(actionLock.current)return;const s=stateRef.current;
+    if(s.mode==='transition'){setMode('playing');return;}
+    if(s.mode==='note'){showDialog(DIALOG.note,()=>setStep(5));return;}
     if(s.mode==='start'){setMode('intro');setIntroIndex(0);beep(260);return;}
-    if(s.mode==='intro'){if(introIndex<GAME_TEXT.intro.length-1){setIntroIndex(i=>i+1);beep(320);}else{setMode('transition');later(()=>setMode('playing'),900);}return;}
+    if(s.mode==='intro'){if(introIndex<GAME_TEXT.intro.length-1){setIntroIndex(i=>i+1);beep(320);}else{setMode('transition');}return;}
     if(s.mode==='dialog'){if(dialogIndex<dialog.length-1){setDialogIndex(i=>i+1);beep(500);}else{const done=afterDialog.current;afterDialog.current=null;setMode('playing');done?.();}return;}
     if(s.mode!=='playing')return;const p=player.current,target=s.scene===7?homeTarget(p):targetFor(s.scene,s.step);if(!target||Math.hypot(p.x-target.x,p.y-target.y)>66){beep(120,.05);return;}beep(620);
-    if(s.scene===0){if(s.step<2)showDialog(DIALOG.dirt,()=>setStep(v=>v+1));else if(s.step===2)showDialog(DIALOG.note,()=>setStep(3));else if(s.step===3)showDialog(DIALOG.coding,()=>setStep(4));else goScene(1);}
-    else if(s.scene===1){if(s.step===0)showDialog(DIALOG.german,()=>setStep(1));else showDialog(['Code. Deploy. Repeat.'],()=>goScene(2));}
+    if(s.scene===0){
+      if(s.step<=4&&cleanerAt(performance.now()).watching){setCaught(true);beep(100,.15);later(()=>setCaught(false),1400);return;}
+      setCaught(false);
+      if(s.step<3)showDialog(s.step===2?[...DIALOG.dirt,...DIALOG.daysLater]:DIALOG.dirt,()=>setStep(s.step+1));
+      else if(s.step===3){keys.current.clear();actionLock.current=true;setMode('pot');later(()=>{setStep(4);setMode('playing');actionLock.current=false;},1400);}
+      else if(s.step===4){keys.current.clear();actionLock.current=true;setMode('note');later(()=>{actionLock.current=false;},2200);}
+      else if(s.step===5)showDialog(DIALOG.coding,()=>setStep(6));
+      else goScene(1);
+    }
+    else if(s.scene===1){
+      if(s.step===0)showDialog(DIALOG.german.slice(0,2),()=>{keys.current.clear();setMode('balcony');later(()=>{setStep(1);setMode('playing');},6200);});
+      else showDialog(DIALOG.german.slice(3),()=>goScene(2));
+    }
     else if(s.scene===2){const flow=[DIALOG.meetAklima,DIALOG.evaFood,DIALOG.evaPet,DIALOG.evaSave,DIALOG.kiss] as const;showDialog(flow[Math.min(s.step,4)],()=>s.step===4?goScene(3):setStep(v=>v+1));}
     else if(s.scene===3){if(s.step===0)showDialog(DIALOG.bike,()=>setStep(1));else showDialog(DIALOG.shrimp,()=>goScene(4));}
     else if(s.scene===4){if(s.step===0)showDialog(DIALOG.leiaJoin,()=>setStep(1));else if(s.step===1)showDialog(DIALOG.drakeJoin,()=>setStep(2));else showDialog(DIALOG.barcelona,()=>goScene(5));}
-    else if(s.scene===5)showDialog([...DIALOG.rejections,...DIALOG.support],()=>goScene(6));else if(s.scene===6)showDialog(DIALOG.wedding,()=>goScene(7));else if(target.key==='ball'){keys.current.clear();setMode('fetch');later(()=>showDialog(DIALOG.fetch),3900);}else if(target.key==='sofa'){keys.current.clear();setMode('ending');later(()=>setMode('final'),4200);beep(740,.2);}else showDialog(DIALOG[target.key as keyof typeof DIALOG]);
+    else if(s.scene===5)showDialog([...DIALOG.rejections,...DIALOG.support],()=>goScene(6));else if(s.scene===6)showDialog(DIALOG.wedding,()=>goScene(7));else if(target.key==='ball'){keys.current.clear();setMode('fetch');later(()=>showDialog(DIALOG.fetch),3900);}else if(target.key==='sofa'){keys.current.clear();setMode('ending');later(()=>setMode('final'),4200);beep(740,.2);}else {const lines=DIALOG[target.key as keyof typeof DIALOG];if(Array.isArray(lines))showDialog(lines);}
   },[beep,dialog,dialogIndex,goScene,introIndex,showDialog]);
   useEffect(()=>{const down=(event:KeyboardEvent)=>{const key=event.key.toLowerCase();if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d',' ','enter'].includes(key))event.preventDefault();if(key===' '||key==='enter'){if(!event.repeat)interact();}else keys.current.add(key);};const up=(event:KeyboardEvent)=>keys.current.delete(event.key.toLowerCase());window.addEventListener('keydown',down,{passive:false});window.addEventListener('keyup',up);return()=>{window.removeEventListener('keydown',down);window.removeEventListener('keyup',up);};},[interact]);
   useEffect(()=>{
@@ -56,6 +72,7 @@ export default function CouponExperience(){
     const clear=()=>keys.current.clear();
     window.addEventListener('blur',clear);document.addEventListener('visibilitychange',clear);
     const loop=(now:number)=>{
+      const looks=cleanerAt(now).watching;if(looks!==watchRef.current){watchRef.current=looks;setWatching(looks);}
       const delta=Math.min((now-last)/1000,.04);last=now;const state=stateRef.current;
       let dx=0,dy=0;
       if(state.mode==='playing'){
@@ -70,7 +87,7 @@ export default function CouponExperience(){
           player.current.y=Math.max(330,Math.min(H-30,player.current.y+dy/length*PLAYER_SPEED*delta));
         }
       }
-      renderGame(ctx,{...state,line:animation.current.line,elapsed:now-animation.current.started,action:now-animation.current.action,player:{...player.current,moving:!!(dx||dy)&&!reduced.matches,facing:animation.current.facing}},reduced.matches?0:now);
+      renderGame(ctx,{...state,cleaner:cleanerAt(now),line:animation.current.line,elapsed:now-animation.current.started,action:now-animation.current.action,player:{...player.current,moving:!!(dx||dy)&&!reduced.matches,facing:animation.current.facing}},reduced.matches?0:now);
       const candidate=state.scene===7?homeTarget(player.current):targetFor(state.scene,state.step);
       const nearby=state.mode==='playing'&&candidate&&Math.hypot(player.current.x-candidate.x,player.current.y-candidate.y)<66?candidate:null;
       if(candidate&&state.mode==='playing'){
@@ -87,7 +104,7 @@ export default function CouponExperience(){
     return()=>{cancelAnimationFrame(frame);window.removeEventListener('blur',clear);document.removeEventListener('visibilitychange',clear);};
   },[]);
   const pressDirection=(key:string,pressed:boolean)=>pressed?keys.current.add(key):keys.current.delete(key);
-  const restart=()=>{timers.current.forEach(clearTimeout);timers.current=[];afterDialog.current=null;actionLock.current=false;keys.current.clear();player.current={...STARTS[0]};setScene(0);setStep(0);setDialog([]);setDialogIndex(0);setIntroIndex(0);setMode('start');};
+  const restart=()=>{timers.current.forEach(clearTimeout);timers.current=[];afterDialog.current=null;actionLock.current=false;setCaught(false);keys.current.clear();player.current={...STARTS[0]};setScene(0);setStep(0);setDialog([]);setDialogIndex(0);setIntroIndex(0);setMode('start');};
   const activeTarget=scene===7?HOME_TARGETS.find(item=>item.key===nearbyKey)??null:targetFor(scene,step);
   const objective=OBJECTIVES[scene][Math.min(step,OBJECTIVES[scene].length-1)];
   return <main className={styles.page}><div className={styles.scanlines} aria-hidden="true"/><section className={styles.gameShell} aria-label="ALEKSEI: LEVEL 38 — пиксельная игра-подарок">
@@ -95,9 +112,11 @@ export default function CouponExperience(){
     <div className={styles.screen}><canvas ref={canvasRef} width={W} height={H} aria-label={`Сцена ${scene+1}: ${GAME_TEXT.scenes[scene].title}`}/>
       {mode==='start'&&<div className={styles.cover}><p className={styles.kicker}>A BIRTHDAY GAME</p><h1>{GAME_TEXT.title}</h1><p>{GAME_TEXT.subtitle}</p><button onClick={interact}>START GAME</button><small>{GAME_TEXT.controls}</small></div>}
       {mode==='intro'&&<button className={styles.cinematic} onClick={interact}><span>{GAME_TEXT.intro[introIndex].split('\n').map(part=><span key={part}>{part}</span>)}</span><small>SPACE TO CONTINUE</small></button>}
-      {mode==='transition'&&<div className={styles.transitionCard}><p>{GAME_TEXT.scenes[scene].label}</p><h2>{GAME_TEXT.scenes[scene].title}</h2></div>}
+      {mode==='transition'&&<button onClick={interact} className={styles.transitionCard}><p>{GAME_TEXT.scenes[scene].label}</p><h2>{GAME_TEXT.scenes[scene].title}</h2><small>SPACE / ENTER / A — НАЧАТЬ УРОВЕНЬ</small></button>}
       {(mode==='playing'||mode==='dialog')&&<div className={styles.mission}><span>{GAME_TEXT.scenes[scene].label} / 08</span><strong>{objective}</strong><small>Жёлтая стрелка — цель · Space / Enter или A — действие</small></div>}
       {mode==='playing'&&activeTarget&&nearbyKey&&<button className={styles.prompt} onClick={interact}><kbd>SPACE</kbd> {activeTarget.label}</button>}
+      {scene===0&&step<=4&&mode==='playing'&&<div className={styles.cleanerStatus} role="status">{caught?'«Я всё вижу». Подожди, пока она отвернётся.':watching?'Уборщица смотрит — подожди':'Она отвернулась — можно действовать'}</div>}
+      {mode==='note'&&<button className={styles.noteReveal} onClick={interact} aria-label="Прочитать записку"><span className={styles.paper}><small>ЗАПИСКА НА ДНЕ ГОРШКА</small><strong>{DIALOG.noteMessage}</strong></span><span className={styles.stunned}>…</span><small>Space / Enter / A — продолжить</small></button>}
       {mode==='dialog'&&<button className={styles.dialog} onClick={interact} aria-live="polite"><span>{dialog[dialogIndex]}</span><small>{dialogIndex<dialog.length-1?'SPACE / NEXT':'SPACE / CONTINUE'} ▾</small></button>}
       {mode==='final'&&<div className={styles.final}><p className={styles.complete}>LEVEL 38 COMPLETE</p><h2>MAIN QUEST STATUS:<br/><em>IN PROGRESS</em></h2><div className={styles.stats}>{GAME_TEXT.finalStats.map(stat=><span key={stat}>✓ {stat}</span>)}</div><div className={styles.letter}>{GAME_TEXT.letter.map((line,index)=><p key={index}>{line}</p>)}</div><button onClick={restart}>PLAY AGAIN</button></div>}
     </div>
