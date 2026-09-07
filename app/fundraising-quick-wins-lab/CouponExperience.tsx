@@ -3,11 +3,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { DIALOG, GAME_TEXT, OBJECTIVES } from './gameData';
 import styles from './page.module.css';
-import { cleanerAt } from './ozersk';
+import { cleanerAt, SPILL_DURATION, RESTORE_DURATION } from './ozersk';
 import { renderGame } from './gameArt';
 
 const W = 900, H = 520, PLAYER_SPEED = 190;
-type Mode = 'start' | 'intro' | 'playing' | 'dialog' | 'transition' | 'ending' | 'fetch' | 'pot' | 'balcony' | 'note' | 'final';
+type Mode = 'start' | 'intro' | 'playing' | 'dialog' | 'transition' | 'ending' | 'fetch' | 'spill' | 'restore' | 'pot' | 'balcony' | 'note' | 'final';
 type Point = { x: number; y: number };
 type Target = Point & { label: string; key: string };
 const STARTS: Point[] = [{x:130,y:390},{x:130,y:390},{x:120,y:400},{x:120,y:390},{x:120,y:395},{x:180,y:390},{x:170,y:400},{x:450,y:430}];
@@ -28,6 +28,7 @@ export default function CouponExperience(){
   const stateRef=useRef({scene:0,step:0,mode:'start' as Mode});
   const [watching,setWatching]=useState(true),[caught,setCaught]=useState(false);
   const watchRef=useRef(true);
+  const cleanerEpoch=useRef(0),cleanerOrigin=useRef(cleanerAt(0));
   const nearbyRef=useRef<string|null>(null);
   const animation=useRef({started:0, action:0, facing:'down', line:''});
   const timers=useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -47,9 +48,20 @@ export default function CouponExperience(){
     if(s.mode==='dialog'){if(dialogIndex<dialog.length-1){setDialogIndex(i=>i+1);beep(500);}else{const done=afterDialog.current;afterDialog.current=null;setMode('playing');done?.();}return;}
     if(s.mode!=='playing')return;const p=player.current,target=s.scene===7?homeTarget(p):targetFor(s.scene,s.step);if(!target||Math.hypot(p.x-target.x,p.y-target.y)>66){beep(120,.05);return;}beep(620);
     if(s.scene===0){
-      if(s.step<=4&&cleanerAt(performance.now()).watching){setCaught(true);beep(100,.15);later(()=>setCaught(false),1400);return;}
+      if(s.step<=4&&cleanerAt(performance.now()-cleanerEpoch.current).watching){setCaught(true);beep(100,.15);later(()=>setCaught(false),1400);return;}
       setCaught(false);
-      if(s.step<3)showDialog(s.step===2?[...DIALOG.dirt,...DIALOG.daysLater]:DIALOG.dirt,()=>setStep(s.step+1));
+      if(s.step<3){
+        keys.current.clear();actionLock.current=true;setMode('spill');
+        cleanerOrigin.current=cleanerAt(performance.now()-cleanerEpoch.current);
+        later(()=>{
+          setStep(s.step+1);setMode('restore');
+          later(()=>{
+            cleanerEpoch.current=performance.now();
+            if(s.step===2)showDialog(DIALOG.daysLater);
+            else{setMode('playing');actionLock.current=false;}
+          },RESTORE_DURATION);
+        },SPILL_DURATION);
+      }
       else if(s.step===3){keys.current.clear();actionLock.current=true;setMode('pot');later(()=>{setStep(4);setMode('playing');actionLock.current=false;},1400);}
       else if(s.step===4){keys.current.clear();actionLock.current=true;setMode('note');later(()=>{actionLock.current=false;},2200);}
       else if(s.step===5)showDialog(DIALOG.coding,()=>setStep(6));
@@ -72,7 +84,7 @@ export default function CouponExperience(){
     const clear=()=>keys.current.clear();
     window.addEventListener('blur',clear);document.addEventListener('visibilitychange',clear);
     const loop=(now:number)=>{
-      const looks=cleanerAt(now).watching;if(looks!==watchRef.current){watchRef.current=looks;setWatching(looks);}
+      const looks=cleanerAt(now-cleanerEpoch.current).watching;if(looks!==watchRef.current){watchRef.current=looks;setWatching(looks);}
       const delta=Math.min((now-last)/1000,.04);last=now;const state=stateRef.current;
       let dx=0,dy=0;
       if(state.mode==='playing'){
@@ -87,7 +99,7 @@ export default function CouponExperience(){
           player.current.y=Math.max(330,Math.min(H-30,player.current.y+dy/length*PLAYER_SPEED*delta));
         }
       }
-      renderGame(ctx,{...state,cleaner:cleanerAt(now),line:animation.current.line,elapsed:now-animation.current.started,action:now-animation.current.action,player:{...player.current,moving:!!(dx||dy)&&!reduced.matches,facing:animation.current.facing}},reduced.matches?0:now);
+      renderGame(ctx,{...state,cleaner:state.mode==='spill'||state.mode==='restore'?cleanerOrigin.current:cleanerAt(now-cleanerEpoch.current),line:animation.current.line,elapsed:now-animation.current.started,action:now-animation.current.action,player:{...player.current,moving:!!(dx||dy)&&!reduced.matches,facing:animation.current.facing}},reduced.matches?0:now);
       const candidate=state.scene===7?homeTarget(player.current):targetFor(state.scene,state.step);
       const nearby=state.mode==='playing'&&candidate&&Math.hypot(player.current.x-candidate.x,player.current.y-candidate.y)<66?candidate:null;
       if(candidate&&state.mode==='playing'){
@@ -104,7 +116,7 @@ export default function CouponExperience(){
     return()=>{cancelAnimationFrame(frame);window.removeEventListener('blur',clear);document.removeEventListener('visibilitychange',clear);};
   },[]);
   const pressDirection=(key:string,pressed:boolean)=>pressed?keys.current.add(key):keys.current.delete(key);
-  const restart=()=>{timers.current.forEach(clearTimeout);timers.current=[];afterDialog.current=null;actionLock.current=false;setCaught(false);keys.current.clear();player.current={...STARTS[0]};setScene(0);setStep(0);setDialog([]);setDialogIndex(0);setIntroIndex(0);setMode('start');};
+  const restart=()=>{cleanerEpoch.current=performance.now();timers.current.forEach(clearTimeout);timers.current=[];afterDialog.current=null;actionLock.current=false;setCaught(false);keys.current.clear();player.current={...STARTS[0]};setScene(0);setStep(0);setDialog([]);setDialogIndex(0);setIntroIndex(0);setMode('start');};
   const activeTarget=scene===7?HOME_TARGETS.find(item=>item.key===nearbyKey)??null:targetFor(scene,step);
   const objective=OBJECTIVES[scene][Math.min(step,OBJECTIVES[scene].length-1)];
   return <main className={styles.page}><div className={styles.scanlines} aria-hidden="true"/><section className={styles.gameShell} aria-label="ALEKSEI: LEVEL 38 — пиксельная игра-подарок">
@@ -113,7 +125,7 @@ export default function CouponExperience(){
       {mode==='start'&&<div className={styles.cover}><p className={styles.kicker}>A BIRTHDAY GAME</p><h1>{GAME_TEXT.title}</h1><p>{GAME_TEXT.subtitle}</p><button onClick={interact}>START GAME</button><small>{GAME_TEXT.controls}</small></div>}
       {mode==='intro'&&<button className={styles.cinematic} onClick={interact}><span>{GAME_TEXT.intro[introIndex].split('\n').map(part=><span key={part}>{part}</span>)}</span><small>SPACE TO CONTINUE</small></button>}
       {mode==='transition'&&<button onClick={interact} className={styles.transitionCard}><p>{GAME_TEXT.scenes[scene].label}</p><h2>{GAME_TEXT.scenes[scene].title}</h2><small>SPACE / ENTER / A — НАЧАТЬ УРОВЕНЬ</small></button>}
-      {(mode==='playing'||mode==='dialog')&&<div className={styles.mission}><span>{GAME_TEXT.scenes[scene].label} / 08</span><strong>{objective}</strong><small>Жёлтая стрелка — цель · Space / Enter или A — действие</small></div>}
+      {(mode==='playing'||mode==='dialog'||mode==='spill'||mode==='restore')&&<div className={styles.mission}><span>{GAME_TEXT.scenes[scene].label} / 08</span><strong>{mode==='spill'?`Высыпаем землю — ${step}/3…`:mode==='restore'?`Земля: ${step}/3. Подожди, пока уборщица поставит цветок на место.`:objective}</strong><small>Жёлтая стрелка — цель · Space / Enter или A — действие</small></div>}
       {mode==='playing'&&activeTarget&&nearbyKey&&<button className={styles.prompt} onClick={interact}><kbd>SPACE</kbd> {activeTarget.label}</button>}
       {scene===0&&step<=4&&mode==='playing'&&<div className={styles.cleanerStatus} role="status">{caught?'«Я всё вижу». Подожди, пока она отвернётся.':watching?'Уборщица смотрит — подожди':'Она отвернулась — можно действовать'}</div>}
       {mode==='note'&&<button className={styles.noteReveal} onClick={interact} aria-label="Прочитать записку"><span className={styles.paper}><small>ЗАПИСКА НА ДНЕ ГОРШКА</small><strong>{DIALOG.noteMessage}</strong></span><span className={styles.stunned}>…</span><small>Space / Enter / A — продолжить</small></button>}

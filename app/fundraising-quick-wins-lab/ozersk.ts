@@ -1,4 +1,6 @@
 // Shared by interaction validation, the HUD and the cleaner's animation.
+export const SPILL_DURATION = 1200;
+export const RESTORE_DURATION = 2600;
 export function cleanerAt(time: number) {
   const phase = time % 9000;
   const watching = phase < 3500;
