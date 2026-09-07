@@ -4,6 +4,7 @@ type Ctx = CanvasRenderingContext2D;
 export type Pose = { x: number; y: number; moving: boolean; facing: string };
 export type VisualState = { scene: number; step: number; mode: string; line: string; elapsed: number; action: number; player: Pose; cleaner?: ReturnType<typeof cleanerAt> };
 const ink = '#252c38';
+const ALEKSEI_HAIR = '#d8bd7e';
 function box(c: Ctx, x: number, y: number, w: number, h: number, color: string) {
   c.fillStyle = color; c.fillRect(Math.round(x), Math.round(y), w, h);
 }
@@ -57,7 +58,7 @@ function ball(c:Ctx,x:number,y:number) {box(c,x-5,y-7,10,14,'#c74143');box(c,x-7
 function bike(c:Ctx,x:number,y:number,t:number,riding=false) {
   shadow(c,x,y+22,78);for(const wheel of [-26,26]){box(c,x+wheel-9,y+7,18,18,ink);box(c,x+wheel-5,y+11,10,10,'#99a8a8');box(c,x+wheel-1,y+10,2,12,Math.floor(t/70)%2?'#d7dfca':'#586675');}
   box(c,x-26,y-3,56,13,'#c76152');box(c,x-17,y-9,29,7,ink);box(c,x+21,y-19,4,20,'#dad5bc');box(c,x+15,y-22,15,4,ink);
-  if(riding){human(c,x-10,y-12,t,'#dca15e');human(c,x+7,y-14,t,'#548795',undefined,false,'right');}
+  if(riding){human(c,x-10,y-12,t,'#dca15e');human(c,x+7,y-14,t,'#548795',ALEKSEI_HAIR,false,'right');}
 }
 
 export function renderGame(c:Ctx,s:VisualState,t:number) {
@@ -148,7 +149,7 @@ export function renderGame(c:Ctx,s:VisualState,t:number) {
     ['eva','drake','leia','osiris'].forEach((name,i)=>{const q=Math.max(0,Math.min((s.elapsed-i*450)/1700,1)),x=[200,840,110,800][i],y=[460,440,370,460][i];animal(c,x+(586+i*44-x)*q,y+(404-y)*q,t,name);});
     if(s.elapsed>2400){heart(c,655,299);box(c,93,172,253,119,'#d6bf8840');label(c,'♥',220,240,'#f4d98c',30);}
   }
-  if(scene===3&&step===1&&s.mode==='playing')bike(c,p.x,p.y,t,true);else human(c,p.x,p.y,t,scene===0?'#e6e8d6':'#548795','#49362d',p.moving,p.facing);
+  if(scene===3&&step===1&&s.mode==='playing')bike(c,p.x,p.y,t,true);else human(c,p.x,p.y,t,scene===0?'#e6e8d6':'#548795',ALEKSEI_HAIR,p.moving,p.facing);
   if(dialog){
     if(scene===0&&step===5||scene===1&&step===1)for(let i=0;i<4;i++)label(c,['HTML','CSS','JavaScript','+1 Coding'][i],300+(scene===1?140:0),325-((s.action/25+i*21)%100),'#b2efb4',12);
     if(scene===3&&step===0)bike(c,150+Math.min(s.action/2200,1)*470,358,t,true);
