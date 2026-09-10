@@ -1,6 +1,6 @@
 // Original code-drawn pixel art. All animation uses the supplied clock.
-import { cleanerAt } from './ozersk';
-import { GUEST_TEXT } from './gameData';
+import { cleanerAt, HIDE_SPOT } from './ozersk';
+import { GUEST_TEXT, OZERSK_TEXT } from './gameData';
 import { renderArcade } from './arcadeArt';
 import type { ArcadeState } from './arcade';
 type Ctx = CanvasRenderingContext2D;
@@ -90,6 +90,15 @@ function aleksei(c:Ctx,x:number,y:number,t:number,work:boolean,moving:boolean,fa
 }
 function skate(c:Ctx,x:number,y:number) {
   shadow(c,x,y+6,42);box(c,x-21,y-2,42,5,'#bb8559');box(c,x-17,y-4,34,3,'#364759');box(c,x-15,y+3,6,5,'#343846');box(c,x+10,y+3,6,5,'#343846');box(c,x-12,y-3,8,1,'#d5bd78');
+}
+function factoryCabinet(c:Ctx) {
+  shadow(c,532,448,98);
+  box(c,484,378,94,67,ink);box(c,489,383,83,57,'#6a828d');
+  box(c,489,383,83,5,'#9cb0b7');box(c,530,390,2,45,'#465e6b');
+  for(const x of [494,539])for(let i=0;i<3;i++)box(c,x,394+i*5,26,2,'#475f6c');
+  box(c,523,416,3,10,'#d3c9a7');box(c,536,416,3,10,'#d3c9a7');
+  box(c,490,445,7,5,ink);box(c,565,445,7,5,ink);
+  label(c,OZERSK_TEXT.cover,532,467,'#455b69',9);
 }
 function animal(c:Ctx,x:number,y:number,t:number,name:string) {
   const cat=name==='leia'||name==='osiris',color=name==='leia'?'#9296a2':name==='osiris'?'#d58c43':name==='eva'?'#916343':'#744c38';
@@ -344,6 +353,7 @@ export function renderGame(c:Ctx,s:VisualState,t:number) {
 
   let p={...s.player};
   if(s.mode==='spill'||s.mode==='pot'){p.x=655;p.y=409;p.moving=false;p.facing='right';box(c,660,396,24,5,'#ddb18c');}
+  if(s.mode==='escape'){p.moving=true;p.facing='left';}
   if(s.mode==='balcony'){
     const elapsed=s.elapsed,walkOut=Math.min(elapsed/1600,1),walkBack=Math.max(0,Math.min((elapsed-4400)/1600,1)),progress=walkOut*(1-walkBack);
     p.x+=(765-p.x)*progress;p.y+=(447-p.y)*progress;p.moving=elapsed<1600||elapsed>4400;p.facing=elapsed>4400?'up':'right';
@@ -374,8 +384,17 @@ export function renderGame(c:Ctx,s:VisualState,t:number) {
     });
     if(elapsed>3400){heart(c,655,292);if(elapsed>3800){box(c,496,330,334,62,'#d5b9dd0b');label(c,'ВСЕ В СБОРЕ',660,425,'#ecd4ad',12);}}
   }
-  if(scene===0){const sx=s.mode==='spill'||s.mode==='restore'||s.mode==='pot'||s.mode==='note'?625:p.x-25;skate(c,sx,p.y+20);}
+  if(scene===0&&p.y>=447)factoryCabinet(c);
+  if(scene===0){const parked=step===4||['spill','restore','pot','note','escape','hiding'].includes(s.mode);skate(c,parked?625:p.x-25,parked?429:p.y+20);}
   if(scene===4&&step===1&&s.mode==='playing')bike(c,p.x,p.y,t,true);else aleksei(c,p.x,p.y,t,scene===0,p.moving,p.facing,homeEnding);
+  if(scene===0&&p.y<447){
+    factoryCabinet(c);
+    if((s.mode==='hiding'||s.mode==='playing'&&step===4)&&Math.hypot(p.x-HIDE_SPOT.x,p.y-HIDE_SPOT.y)<5){
+      // Only his eyes and light hair peek over the cabinet; the body stays concealed.
+      box(c,p.x-8,370,16,8,'#e6b48c');box(c,p.x-9,368,18,4,ALEKSEI_HAIR);
+      box(c,p.x-4,374,2,2,ink);box(c,p.x+3,374,2,2,ink);
+    }
+  }
   if(dialog){
     if(scene===0&&step===5||scene===1&&step===1)for(let i=0;i<4;i++)label(c,['HTML','CSS','JavaScript','+1 Coding'][i],300+(scene===1?140:0),325-((s.action/25+i*21)%100),'#b2efb4',12);
     if(scene===4&&step===0)bike(c,150+Math.min(s.action/2200,1)*470,358,t,true);

@@ -1,6 +1,14 @@
 // Shared by interaction validation, HUD and animation. All three rounds signal turns.
 export const SPILL_DURATION = 1200;
 export const RESTORE_DURATION = 2600;
+export const POT_FLIP_DURATION = 1400;
+export const ESCAPE_DURATION = 900;
+export const HIDE_DURATION = 1400;
+export const HIDE_SPOT = { x: 532, y: 418 };
+export function potEscapeAt(elapsed: number) {
+  const progress = Math.max(0, Math.min(elapsed / ESCAPE_DURATION, 1));
+  return { x: 655 + (HIDE_SPOT.x - 655) * progress, y: 409 + (HIDE_SPOT.y - 409) * progress };
+}
 export function cleanerAt(time: number, round = 0) {
   const difficulty = Math.min(Math.max(round, 0), 2);
   const period = [9000, 7800, 6900][difficulty];

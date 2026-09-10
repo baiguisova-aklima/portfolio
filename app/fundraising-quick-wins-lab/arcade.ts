@@ -11,7 +11,7 @@ export type ArcadeState = {
   obstacles: { x: number; y: number; hit: boolean; type: number }[]; nextObstacle: number;
   dog: { x: number; y: number }; result: ChallengeResult | null;
 };
-export const TARGET_HP = [16, 16, 16, 24];
+export const TARGET_HP = [3, 3, 3, 3];
 export const RIDE_DISTANCE = 840;
 const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
 export function createArcade(kind: ArcadeKind): ArcadeState {

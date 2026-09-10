@@ -1,16 +1,16 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { DIALOG, GAME_TEXT, GUEST_TEXT, OBJECTIVES, CHALLENGES, SHOOTING_TARGETS, MEDALS, ARCADE_TEXT } from './gameData';
+import { DIALOG, GAME_TEXT, GUEST_TEXT, OZERSK_TEXT, OBJECTIVES, CHALLENGES, SHOOTING_TARGETS, MEDALS, ARCADE_TEXT } from './gameData';
 import styles from './page.module.css';
-import { cleanerAt, SPILL_DURATION, RESTORE_DURATION } from './ozersk';
+import { cleanerAt, SPILL_DURATION, RESTORE_DURATION, POT_FLIP_DURATION, ESCAPE_DURATION, HIDE_DURATION, HIDE_SPOT, potEscapeAt } from './ozersk';
 import { renderGame } from './gameArt';
 import { createArcade, updateArcade, cleanerResult, RIDE_DISTANCE, TARGET_HP, type ArcadeState, type ArcadeKind, type ChallengeResult } from './arcade';
 import { startEndingTheme } from './soundtrack';
 import { EMPTY_PROGRESS, SAVE_KEY, parseProgress, withResult, type Progress } from './gameProgress';
 
 const W = 900, H = 520, PLAYER_SPEED = 190;
-type Mode = 'start' | 'intro' | 'playing' | 'dialog' | 'transition' | 'ending' | 'fetch' | 'spill' | 'restore' | 'pot' | 'balcony' | 'note' | 'eating' | 'departure' | 'returning' | 'arcadeReady' | 'arcade' | 'arcadeResult' | 'final';
+type Mode = 'start' | 'intro' | 'playing' | 'dialog' | 'transition' | 'ending' | 'fetch' | 'spill' | 'restore' | 'pot' | 'escape' | 'hiding' | 'balcony' | 'note' | 'eating' | 'departure' | 'returning' | 'arcadeReady' | 'arcade' | 'arcadeResult' | 'final';
 type Point = { x: number; y: number };
 type Target = Point & { label: string; key: string; markerY?: number };
 const STARTS: Point[] = [{x:130,y:390},{x:130,y:390},{x:120,y:400},{x:140,y:410},{x:120,y:390},{x:120,y:395},{x:180,y:390},{x:170,y:400},{x:450,y:430}];
@@ -132,7 +132,16 @@ export default function CouponExperience(){
           },RESTORE_DURATION);
         },SPILL_DURATION);
       }
-      else if(s.step===3){keys.current.clear();actionLock.current=true;setMode('pot');later(()=>{setStep(4);setMode('playing');actionLock.current=false;},1400);}
+      else if(s.step===3){
+        clearInput();actionLock.current=true;player.current={x:655,y:409};setMode('pot');
+        later(()=>{
+          setStep(4);setMode('escape');animation.current.facing='left';
+          later(()=>{
+            player.current={...HIDE_SPOT};clearInput();setMode('hiding');
+            later(()=>{clearInput();setMode('playing');actionLock.current=false;},HIDE_DURATION);
+          },ESCAPE_DURATION);
+        },POT_FLIP_DURATION);
+      }
       else if(s.step===4){keys.current.clear();actionLock.current=true;setMode('note');later(()=>{actionLock.current=false;},2200);}
       else if(s.step===5)showDialog(DIALOG.coding,()=>setStep(6));
       else goScene(1);
@@ -183,6 +192,7 @@ export default function CouponExperience(){
       const looks=cleaner.watching;if(looks!==watchRef.current){watchRef.current=looks;setWatching(looks);}
       if(state.scene===0&&state.step<3&&['playing','spill','restore'].includes(state.mode)&&!document.hidden)cleanerStats.current.seconds+=delta;
       let dx=0,dy=0;
+      if(state.mode==='escape')player.current=potEscapeAt(now-animation.current.started);
       if((state.mode==='playing'||state.mode==='arcade')&&!document.hidden){
         if(keys.current.has('a')||keys.current.has('arrowleft'))dx--;
         if(keys.current.has('d')||keys.current.has('arrowright'))dx++;
@@ -257,6 +267,7 @@ export default function CouponExperience(){
       {mode==='playing'&&activeTarget&&nearbyKey&&<button className={styles.prompt} onClick={interact}><kbd>SPACE</kbd> {activeTarget.label}</button>}
       {scene===0&&step<=4&&mode==='playing'&&<div className={styles.cleanerStatus} role="status">{caught?'«Я всё вижу». Подожди, пока она отвернётся.':watching?'Уборщица смотрит — подожди':'Она отвернулась — действуй! Следи за знаком !'}</div>}
       {(mode==='departure'||mode==='returning')&&<div className={styles.sceneCaption}>{mode==='departure'?ARCADE_TEXT.departure:ARCADE_TEXT.returning}</div>}
+      {(mode==='escape'||mode==='hiding')&&<div className={styles.sceneCaption} role="status">{mode==='escape'?OZERSK_TEXT.escape:OZERSK_TEXT.hiding}</div>}
       {mode==='note'&&<button className={styles.noteReveal} onClick={interact} aria-label="Прочитать записку"><span className={styles.paper}><small>ЗАПИСКА НА ДНЕ ГОРШКА</small><strong>{DIALOG.noteMessage}</strong></span><span className={styles.stunned}>…</span><small>Space / Enter / A — продолжить</small></button>}
       {mode==='dialog'&&<button className={styles.dialog} onClick={interact} aria-live="polite"><span>{dialog[dialogIndex]}</span><small>{dialogIndex<dialog.length-1?'SPACE / NEXT':'SPACE / CONTINUE'} ▾</small></button>}
       {mode==='ending'&&endingReady&&<button className={styles.prompt} onClick={interact}>ПРОЧИТАТЬ ПИСЬМО ♥</button>}
