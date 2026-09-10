@@ -17,3 +17,29 @@
 .guestScreen canvas{position:relative;height:auto;aspect-ratio:900/520}
 .guestScreen .dialog{position:relative;inset:auto;width:92%;margin:0 4% 18px;min-height:105px}
 @media(max-width:760px){.guestScreen .dialog{width:96%;margin:0 2% 12px;min-height:96px}.guestScreen .mission small{display:none}}
+/* Short arcade rounds have their own HUD; it never covers targets or the road. */
+.challengeHud{padding:12px 18px;background:#202432;border-bottom:3px solid #0a1019;color:#f7e7c4}
+.challengeHud>div:first-child{display:flex;justify-content:space-between;gap:12px;font-size:14px}
+.challengeHud small{display:block;margin-top:6px;font-size:11px;color:#c8c2bd}.challengeHud p{margin:7px 0 0;font-size:12px}
+.targetChecklist{display:flex;gap:7px;margin-top:10px}.targetChecklist span{padding:5px 9px;background:#303a49;color:#ddd0b9;font-size:12px}.targetChecklist span[data-done=true]{color:#b8e8b9;background:#2b4940}
+.challengeHud progress{display:block;width:100%;height:8px;margin-top:10px;accent-color:#e5c775}
+.challengePanel{position:absolute;inset:0;z-index:7;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;padding:28px;text-align:center;background:#111924ed;color:#f3e6c4}
+.challengePanel h2{max-width:760px;margin:0;color:#ffe08b;font-size:clamp(22px,3.4vw,36px);line-height:1.2}
+.challengePanel p{max-width:580px;margin:0;font-size:16px;line-height:1.5}.challengePanel>small{font-size:12px;line-height:1.5;color:#c9c8b8}
+.primaryButton,.secondaryButton{padding:12px 18px;border:2px solid #e6be6d;background:#edcb78;color:#252233;font:700 13px "Courier New",monospace;cursor:pointer}
+.secondaryButton{background:#202b3b;color:#f1dfb9;border-color:#5c697a}
+.cover .secondaryButton{padding:9px 18px;background:#202b3b;color:#f1dfb9;border:2px solid #5c697a;box-shadow:none;font-size:11px}
+.coverActions{display:flex;flex-direction:column;align-items:center;gap:12px}.resumeLocation{font-size:10px;color:#cec5b3}
+
+
+.resultActions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.medal{font-size:38px;color:#edd083}.medal span{font-size:17px;vertical-align:middle}.medal[data-medal=silver]{color:#c4d6df}.medal[data-medal=bronze]{color:#cb9676}
+.gameShell footer>div{display:flex;gap:12px}
+@media(max-width:760px){.menuScreen{min-height:380px;aspect-ratio:auto}.challengePanel{padding:20px 14px;gap:15px}.challengePanel p{font-size:13px}.challengePanel>small{font-size:11px}.challengePanel h2{font-size:23px}.challengeHud{padding:10px 12px}.challengeHud>div:first-child{font-size:12px}.challengeHud small,.challengeHud p{font-size:10px}.targetChecklist{gap:4px}.targetChecklist span{flex:1;text-align:center;font-size:10px;padding:4px}.cover{padding:20px}.cover>p:not(.kicker){margin-bottom:10px}.cover h1{font-size:30px}.cover small{display:none}.resultActions{flex-direction:column;width:100%}.primaryButton,.secondaryButton{min-height:44px;font-size:12px}.gameShell footer{height:44px}}
+.gameShell{border-color:#121825;box-shadow:0 0 0 2px #79717b,0 0 0 7px #151925,0 28px 85px #0009}.topbar{background:linear-gradient(100deg,#232638,#161b28)}.topbar>div:first-child{border-left:3px solid #dfbd78;padding-left:10px}.topbar strong{color:#f5ddb5}.screen{background:#1a2230}.mission{background:#172130eb;border-color:#edc580;box-shadow:3px 3px 0 #161b2855}.cover{background:linear-gradient(150deg,#111728e8,#252135e0)}.transitionCard{background:linear-gradient(145deg,#121d2aef,#292039f0)}.transitionCard h2{text-shadow:4px 4px 0 #443143}.prompt{border-color:#e8c995;background:#1b2939;box-shadow:3px 3px 0 #11172588}.dialog{background:#1a2331;border-color:#e6cea5}.mobileControls{background:linear-gradient(#22283a,#1b2130)}.dpad button{background:#30394b;border-color:#606b7d;box-shadow:0 3px 0 #111827}.dpad button:active{background:#52617b}.actionButton:active{transform:translateY(2px);box-shadow:2px 2px 0 #0b0b0e}
+.finalScreen{aspect-ratio:auto}.finalScreen canvas{position:relative;aspect-ratio:900/520;height:auto}.finalScreen .final{position:relative;inset:auto;overflow:visible;background:linear-gradient(#181e2b,#201e30)}
+@media(max-width:760px){.gameShell{box-shadow:none;border:0}.finalScreen .final{padding-top:26px}.finalScreen .complete{font-size:26px}}
+.sceneCaption{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);max-width:92%;padding:10px 16px;background:#172130ed;color:#f2d9b2;font-size:13px;line-height:1.4;text-align:center;border-bottom:2px solid #90c8d7;pointer-events:none}
+@media(max-width:760px){.sceneCaption{width:94%;font-size:10px;bottom:7px;padding:7px 10px}}
+.challengeHud{line-height:1.3}
+@media(min-width:761px){.gameShell{width:min(1080px,100%,calc((100svh - 180px)*1.7308))}.arcadeShell{width:min(1080px,100%,calc((100svh - 310px)*1.7308))}}

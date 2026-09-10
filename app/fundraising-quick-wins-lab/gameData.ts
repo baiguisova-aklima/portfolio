@@ -9,7 +9,7 @@ export const GAME_TEXT = {
     { label: 'LEVEL 03', title: 'ТБИЛИСИ', objective: 'Подойди к Аклиме.' },
     { label: 'LEVEL 04', title: 'В ГОСТЯХ · ХИНКАЛИ', objective: 'Поздоровайся с гостями.' },
     { label: 'LEVEL 05 · DLC', title: 'THAILAND', objective: 'Садись на байк.' },
-    { label: 'LEVEL 06', title: 'BARCELONA', objective: 'Познакомься с новыми членами party.' },
+    { label: 'LEVEL 06', title: 'BARCELONA', objective: 'Победи взрослую жизнь.' },
     { label: 'LEVEL 07', title: 'THE HARD QUEST', objective: 'Поддержи Аклиму.' },
     { label: 'LEVEL 08', title: 'WEDDING', objective: 'Подойди к арке.' },
     { label: 'LEVEL 09', title: 'HOME BASE', objective: 'Осмотрись и садись рядом с Аклимой.' },
@@ -44,10 +44,10 @@ export const GUEST_TEXT = {
 export const OBJECTIVES: readonly (readonly string[])[] = [
   ['Подойди к цветку справа. Высыпь землю, пока уборщица не смотрит — 0/3.', 'Высыпь землю, пока уборщица не смотрит — 1/3.', 'Высыпь землю ещё раз, пока уборщица не смотрит — 2/3.', 'Переверни горшок, пока уборщица не смотрит.', 'Подними и прочитай записку у горшка, пока уборщица не смотрит.', 'Подойди к компьютеру слева и начни кодить.', 'Подойди к двери EXIT справа и выйди с завода.'],
   ['Подойди к Герману справа и поговори с ним.', 'Подойди к компьютеру в центре и начни кодить.'],
-  ['Подойди к Аклиме у балкона справа.', 'Подойди к миске слева от дивана и покорми Еву.', 'Подойди к Еве у дивана и погладь её.', 'Подойди к дивану и спаси его от Евы.', 'Подойди к Аклиме на балконе справа.'],
+  ['Подойди к Аклиме у балкона справа.', 'Подойди к миске слева от дивана и покорми Еву.', 'Подойди к Еве у дивана и погладь её.', 'Подойди к дивану — Ева готовит побег!', 'Подойди к Аклиме на балконе справа.'],
   ['Поздоровайся с гостями — Алекс слева у стола.', 'Попробуй хинкали — твоя тарелка в центре стола.', 'Поговори с папой — справа у стола.', 'Расскажи папе про завод.'],
   ['Подойди к красному мотоциклу слева и садись.', 'Доедь вправо до тарелки с креветками.'],
-  ['Подойди к серой кошке Лее справа от бассейна.', 'Подойди к Дрейку, коричневому псу справа.', 'Подойди к бассейну слева и собери всех вместе.'],
+  ['Закрой четыре дела в тире.', 'Подойди к серой кошке Лее справа от бассейна.', 'Подойди к Дрейку, коричневому псу справа.', 'Подойди к бассейну слева и собери всех вместе.'],
   ['Подойди к Аклиме за ноутбуком справа и обними её.'],
   ['Подойди к Аклиме под свадебной аркой справа и скажи «да».'],
   ['Исследуй дом. Красный мяч справа — игра с Дрейком. Для финала сядь рядом с Аклимой на диван.'],
@@ -78,7 +78,7 @@ export const DIALOG = {
   rejections: ['Application sent.', 'Rejected.', 'Application sent.', 'Rejected.', 'We decided to move forward with another candidate…'],
   support: ['Алексей обнимает Аклиму.', 'Support given.', 'Sometimes the strongest character is the one who stays next to you.', 'Aleksei +1000'],
   wedding: ['I DO', '✨  ✦  ✨  ✦  ✨', 'ACHIEVEMENT UNLOCKED:', 'CO-OP MODE: PERMANENT'],
-  tv: ['Next highly anticipated open-world game:', 'Still loading…'],
+  tv: ['GTA VI · CO-OP NIGHT', 'Все в сборе. Можно включать.'],
   console: ['Press X to ignore responsibilities.'],
   guitar1: ['Guitar.'],
   guitar2: ['Another guitar.'],
@@ -87,4 +87,25 @@ export const DIALOG = {
   drake: ['Drake', 'Class: Maltipoo', 'Special ability: Chaos'],
   leia: ['Leia', 'Class: Cat', 'Alignment: Unknown'],
   osiris: ['Osiris', 'Class: Orange Cat', 'Veteran'],
+} as const;
+
+export const CHALLENGES = {
+  cleaner: { scene: 0, title: 'НЕ ПОПАДИСЬ УБОРЩИЦЕ', short: 'Озерск', instruction: 'Три попытки. Подойди к цветку и действуй, пока уборщица отвернулась.', controls: 'Стрелки — идти · Space / A — высыпать землю', success: 'ТРИ ИЗ ТРЁХ. ОНА НЕ В ВОСТОРГЕ.', failure: '' },
+  chase: { scene: 2, title: 'СПАСИ ДИВАН', short: 'Погоня за Евой', instruction: 'Ева бежит к дивану! Догони её до того, как она успеет.', controls: 'Стрелки — бежать · лови Еву касанием', success: 'ДИВАН СПАСЁН!', failure: 'ДИВАН НЕ УСПЕЛ СПАСТИСЬ…' },
+  ride: { scene: 4, title: 'К МОРЮ ЗА КРЕВЕТКАМИ', short: 'Поездка на байке', instruction: 'Объезжай конусы, ящики и песок. Аклима держится сзади, море — впереди.', controls: '← → — рулить · байк едет сам', success: 'МОРЕ. КРЕВЕТКИ. ВЫ ДОЕХАЛИ.', failure: '' },
+  shooting: { scene: 5, title: 'ПОБЕДИ ВЗРОСЛУЮ ЖИЗНЬ', short: 'Тир в Барселоне', instruction: 'Четыре небольших дела. Встань под мишенью и стреляй в жёлтый центр!', controls: '← → — двигаться · удерживай Space / A — стрелять', success: 'ADULTING COMPLETED. MOSTLY.', failure: '' },
+} as const;
+export const SHOOTING_TARGETS = [
+  { name: 'АРЕНДА КВАРТИРЫ', short: 'Аренда', hint: 'Поймай хорошую квартиру', stamp: 'БЕРЁМ!', color: '#d5a262' },
+  { name: 'СТРАХОВКА', short: 'Страховка', hint: 'Стреляй, когда щит открыт', stamp: 'ПОКРЫТО', color: '#75b9b3' },
+  { name: 'ВОДИТЕЛЬСКИЕ ПРАВА', short: 'Права', hint: 'Предугадай следующий поворот', stamp: 'СДАЛ!', color: '#bf99d2' },
+  { name: 'ВНЖ', short: 'ВНЖ', hint: 'Разберись с бумагами', stamp: 'ОДОБРЕНО', color: '#edba77' },
+] as const;
+export const MEDALS = { gold: 'ЗОЛОТО', silver: 'СЕРЕБРО', bronze: 'БРОНЗА' } as const;
+export const ARCADE_TEXT = {
+  departure: 'Аклима: «Присмотри за Евой. Я скоро!»',
+  returning: 'Аклима вернулась. Диван цел. Почти чудо.',
+  paperwork: 'ЕЩЁ ОДНА БУМАЖКА', open: 'ЩИТ ОТКРЫТ', shield: 'ЩИТ ЗАКРЫТ',
+  ready: 'НА СТАРТ…', run: 'ЛОВИ ЕВУ!', sea: 'МОРЕ', miss: 'УПС!',
+  shootingIntro: ['Новый город. Новые возможности.', 'И четыре небольших дела…'],
 } as const;
