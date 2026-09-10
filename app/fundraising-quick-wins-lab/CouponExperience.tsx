@@ -10,7 +10,7 @@ import { startEndingTheme } from './soundtrack';
 import { EMPTY_PROGRESS, SAVE_KEY, parseProgress, withResult, type Progress } from './gameProgress';
 
 const W = 900, H = 520, PLAYER_SPEED = 190;
-type Mode = 'start' | 'intro' | 'playing' | 'dialog' | 'transition' | 'ending' | 'fetch' | 'spill' | 'restore' | 'pot' | 'escape' | 'hiding' | 'balcony' | 'note' | 'eating' | 'departure' | 'returning' | 'arcadeReady' | 'arcade' | 'arcadeResult' | 'final';
+type Mode = 'start' | 'intro' | 'playing' | 'dialog' | 'transition' | 'ending' | 'fetch' | 'spill' | 'restore' | 'pot' | 'escape' | 'hiding' | 'balcony' | 'note' | 'eating' | 'departure' | 'returning' | 'arcadeReady' | 'arcade' | 'arcadeResult' | 'arcadePaused' | 'final';
 type Point = { x: number; y: number };
 type Target = Point & { label: string; key: string; markerY?: number };
 const STARTS: Point[] = [{x:130,y:390},{x:130,y:390},{x:120,y:400},{x:140,y:410},{x:120,y:390},{x:120,y:395},{x:180,y:390},{x:170,y:400},{x:450,y:430}];
@@ -57,6 +57,17 @@ export default function CouponExperience(){
   },[clearInput]);
   const [mode,setMode]=useState<Mode>('start'),[scene,setScene]=useState(0),[step,setStep]=useState(0),[introIndex,setIntroIndex]=useState(0),[dialog,setDialog]=useState<readonly string[]>([]),[dialogIndex,setDialogIndex]=useState(0),[muted,setMuted]=useState(false),[nearbyKey,setNearbyKey]=useState<string|null>(null);
   useEffect(()=>{stateRef.current={scene,step,mode};animation.current.started=performance.now();},[scene,step,mode]);
+  // Save completed story actions only; the cleaner challenge stays one scored run.
+  useEffect(()=>{
+    if(mode==='playing'&&(scene>0||step>=5)){
+      const checkpoint=progressRef.current;
+      if(checkpoint?.scene!==scene||checkpoint.step!==step)saveCheckpoint(scene,step);
+    }
+  },[mode,scene,step,saveCheckpoint]);
+  const pauseArcade=useCallback(()=>{
+    if(stateRef.current.mode!=='arcade')return;
+    clearInput();stateRef.current.mode='arcadePaused';setMode('arcadePaused');
+  },[clearInput]);
   useEffect(()=>{animation.current.line=dialog[dialogIndex]??'';animation.current.lineStarted=performance.now();animation.current.dialogIndex=dialogIndex;},[dialog,dialogIndex]);
   const beep=useCallback((frequency=330,duration=.07)=>{if(muted)return;try{audio.current??=new AudioContext();const oscillator=audio.current.createOscillator(),gain=audio.current.createGain();oscillator.type='square';oscillator.frequency.value=frequency;gain.gain.value=.025;oscillator.connect(gain);gain.connect(audio.current.destination);oscillator.start();oscillator.stop(audio.current.currentTime+duration);}catch{}},[muted]);
   const showDialog=useCallback((lines:readonly string[],done?:()=>void)=>{animation.current.action=performance.now();keys.current.clear();actionLock.current=true;setDialog(lines);setDialogIndex(0);afterDialog.current=done??null;setMode('dialog');beep(440);later(()=>{actionLock.current=false;},stateRef.current.scene===3?1100:180);},[beep]);
@@ -96,7 +107,7 @@ export default function CouponExperience(){
   },[result,beginChallenge,showDialog,saveCheckpoint]);
   const interact=useCallback(()=>{if(actionLock.current)return;const s=stateRef.current;
     if(s.mode==='ending'){if(endingReady){saveCheckpoint(8,0,true);setMode('final');}return;}
-    if(s.mode==='arcadeReady'){clearInput();setMode('arcade');return;}
+    if(s.mode==='arcadeReady'||s.mode==='arcadePaused'){clearInput();setMode('arcade');return;}
     if(s.mode==='arcadeResult'){continueChallenge();return;}
     if(s.mode==='arcade')return;
     if(s.mode==='transition'){
@@ -167,9 +178,13 @@ export default function CouponExperience(){
   useEffect(()=>{
     const down=(event:KeyboardEvent)=>{
       const key=event.key.toLowerCase();
+      if(key==='escape'&&!event.repeat){
+        if(stateRef.current.mode==='arcade'){event.preventDefault();pauseArcade();return;}
+        if(stateRef.current.mode==='arcadePaused'){event.preventDefault();interact();return;}
+      }
       // Let focused menu buttons keep native keyboard activation.
       const mode=stateRef.current.mode;
-      if((mode==='start'||mode==='arcadeResult'||mode==='final')&&(event.target as HTMLElement)?.tagName==='BUTTON')return;
+      if((mode==='start'||mode==='arcadeResult'||mode==='final'||mode==='arcadePaused'||(event.target as HTMLElement)?.dataset?.pauseControl==='true')&&(event.target as HTMLElement)?.tagName==='BUTTON')return;
       if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d',' ','enter'].includes(key))event.preventDefault();
       if(key===' '||key==='enter'){
         if(mode==='arcade'&&arcadeRef.current?.kind==='shooting'){fireHeld.current=true;if(!event.repeat)firePulse.current=true;}
@@ -179,12 +194,12 @@ export default function CouponExperience(){
     const up=(event:KeyboardEvent)=>{const key=event.key.toLowerCase();keys.current.delete(key);if(key===' '||key==='enter')fireHeld.current=false;};
     window.addEventListener('keydown',down,{passive:false});window.addEventListener('keyup',up);
     return()=>{window.removeEventListener('keydown',down);window.removeEventListener('keyup',up);};
-  },[interact]);
+  },[interact,pauseArcade]);
   useEffect(()=>{
     const canvas=canvasRef.current,ctx=canvas?.getContext('2d');if(!canvas||!ctx)return;
     const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
     let frame=0,last=performance.now(),lastHud=0;
-    const clear=()=>clearInput();
+    const clear=()=>{clearInput();pauseArcade();};
     window.addEventListener('blur',clear);document.addEventListener('visibilitychange',clear);
     const loop=(now:number)=>{
       const delta=Math.min((now-last)/1000,.04);last=now;const state=stateRef.current;
@@ -231,16 +246,16 @@ export default function CouponExperience(){
     };
     frame=requestAnimationFrame(loop);
     return()=>{cancelAnimationFrame(frame);window.removeEventListener('blur',clear);document.removeEventListener('visibilitychange',clear);};
-  },[clearInput]);
+  },[clearInput,pauseArcade]);
   const pressDirection=(key:string,pressed:boolean)=>pressed?keys.current.add(key):keys.current.delete(key);
   const restart=()=>{resetTransient();player.current={...STARTS[0]};setScene(0);setStep(0);setIntroIndex(0);setMode('start');};
   const activeChallenge=arcadeHud?.kind??'cleaner';
-  const inChallenge=mode==='arcade'||mode==='arcadeReady'||mode==='arcadeResult';
+  const inChallenge=mode==='arcade'||mode==='arcadeReady'||mode==='arcadeResult'||mode==='arcadePaused';
   const activeTarget=scene===8?HOME_TARGETS.find(item=>item.key===nearbyKey)??null:targetFor(scene,step);
   const objective=OBJECTIVES[scene][Math.min(step,OBJECTIVES[scene].length-1)];
   return <main className={styles.page}><div className={styles.scanlines} aria-hidden="true"/><section className={`${styles.gameShell} ${inChallenge?styles.arcadeShell:''}`} aria-label="ALEKSEI: LEVEL 38 — пиксельная игра-подарок">
     <header className={styles.topbar}><div><span>PLAYER</span><strong>ALEKSEI</strong></div><div className={styles.level}><span>LEVEL</span><strong>38</strong></div><button onClick={()=>setMuted(v=>!v)} aria-label={muted?'Включить звук':'Выключить звук'}>{muted?'SOUND OFF':'SOUND ON'}</button></header>
-    {mode==='arcade'&&arcadeHud&&<div className={styles.challengeHud}>
+    {(mode==='arcade'||mode==='arcadePaused')&&arcadeHud&&<div className={styles.challengeHud}>
       <div><strong>{CHALLENGES[arcadeHud.kind].title}</strong><span>{Math.floor(arcadeHud.time)} с</span></div>
       <small>{CHALLENGES[arcadeHud.kind].controls}</small>
       {arcadeHud.kind==='shooting'?<>
@@ -248,9 +263,14 @@ export default function CouponExperience(){
         <p>{SHOOTING_TARGETS[arcadeHud.stage].hint} · {TARGET_HP[arcadeHud.stage]-arcadeHud.hp}/{TARGET_HP[arcadeHud.stage]}</p>
       </>:arcadeHud.kind==='ride'?<><progress aria-label="Путь к морю" max={RIDE_DISTANCE} value={arcadeHud.distance}/><p>До моря: {Math.max(0,Math.ceil((RIDE_DISTANCE-arcadeHud.distance)/24))} с · Задето: {arcadeHud.bumps}</p></>:<p>Догони Еву до дивана. Приблизься, чтобы поймать!</p>}
     </div>}
-    <div className={`${styles.screen} ${scene===3?styles.guestScreen:''} ${mode==='final'?styles.finalScreen:''} ${['start','arcadeReady','arcadeResult'].includes(mode)?styles.menuScreen:''}`}>
+    <div className={`${styles.screen} ${scene===3?styles.guestScreen:''} ${mode==='final'?styles.finalScreen:''} ${['start','arcadeReady','arcadeResult','arcadePaused'].includes(mode)?styles.menuScreen:''}`}>
 <canvas ref={canvasRef} width={W} height={H} aria-label={`Сцена ${scene+1}: ${GAME_TEXT.scenes[scene].title}`}/>
       {mode==='start'&&<div className={styles.cover}><p className={styles.kicker}>A BIRTHDAY GAME</p><h1>{GAME_TEXT.title}</h1><p>{GAME_TEXT.subtitle}</p><div className={styles.coverActions}>{saved?<><button onClick={resume}>ПРОДОЛЖИТЬ</button><span className={styles.resumeLocation}>{saved.completed?'ИСТОРИЯ ПРОЙДЕНА':GAME_TEXT.scenes[saved.scene].title}</span><button className={styles.secondaryButton} onClick={startNew}>НОВАЯ ИГРА</button></>:<button onClick={startNew}>START GAME</button>}</div><small>{GAME_TEXT.controls}</small></div>}
+      {mode==='arcadePaused'&&<div className={styles.challengePanel}>
+        <h2>ПАУЗА</h2><p>Выдохни. Таймер и испытание остановлены.</p>
+        <button className={styles.primaryButton} onClick={interact}>ПРОДОЛЖИТЬ ИСПЫТАНИЕ</button>
+        <small>Esc — вернуться в игру</small>
+      </div>}
       {mode==='arcadeReady'&&arcadeHud&&<div className={styles.challengePanel}>
         <span className={styles.kicker}>{GAME_TEXT.scenes[scene].title}</span>
         <h2>{CHALLENGES[activeChallenge].title}</h2><p>{CHALLENGES[activeChallenge].instruction}</p><small>{CHALLENGES[activeChallenge].controls}</small>
@@ -259,7 +279,7 @@ export default function CouponExperience(){
       {mode==='arcadeResult'&&result&&<div className={styles.challengePanel} role="status">
         <h2>{result.won?CHALLENGES[result.id].success:CHALLENGES[result.id].failure}</h2>
         {result.won?<><div className={styles.medal} data-medal={result.medal}>★ <span>{MEDALS[result.medal]}</span></div><p>{result.seconds} с · {result.score} очков{result.id==='shooting'?` · Меткость ${result.shots?Math.round(result.hits/result.shots*100):0}%`:result.id==='ride'?` · Задето: ${result.bumps}`:''}</p><small>Рекорд: {saved?.best[result.id]?.score??result.score}</small></>:<p>Одно пятно. Ноль обид. Ещё попытка?</p>}
-        <div className={styles.resultActions}><button className={styles.primaryButton} onClick={interact}>{!result.won?'ЕЩЁ ПОПЫТКА':'ДАЛЬШЕ ПО ИСТОРИИ'}</button></div>
+        <div className={styles.resultActions}><button className={styles.primaryButton} onClick={interact}>{!result.won?'ЕЩЁ ПОПЫТКА':'ДАЛЬШЕ ПО ИСТОРИИ'}</button>{result.won&&<button className={styles.secondaryButton} onClick={()=>beginChallenge(result.id as ArcadeKind)}>УЛУЧШИТЬ РЕЗУЛЬТАТ</button>}</div>
       </div>}
       {mode==='intro'&&<button className={styles.cinematic} onClick={interact}><span>{GAME_TEXT.intro[introIndex].split('\n').map(part=><span key={part}>{part}</span>)}</span><small>SPACE TO CONTINUE</small></button>}
       {mode==='transition'&&<button onClick={interact} className={styles.transitionCard}><p>{GAME_TEXT.scenes[scene].label}</p><h2>{GAME_TEXT.scenes[scene].title}</h2><small>SPACE / ENTER / A — НАЧАТЬ УРОВЕНЬ</small></button>}
@@ -276,6 +296,6 @@ export default function CouponExperience(){
     <div className={styles.mobileControls} aria-label="Экранное управление"><div className={styles.dpad}><button aria-label="Вверх" onPointerDown={(event)=>{event.currentTarget.setPointerCapture(event.pointerId);pressDirection('w',true);}} onPointerUp={()=>pressDirection('w',false)} onPointerCancel={()=>pressDirection('w',false)}>▲</button><button aria-label="Влево" onPointerDown={(event)=>{event.currentTarget.setPointerCapture(event.pointerId);pressDirection('a',true);}} onPointerUp={()=>pressDirection('a',false)} onPointerCancel={()=>pressDirection('a',false)}>◀</button><button aria-label="Вниз" onPointerDown={(event)=>{event.currentTarget.setPointerCapture(event.pointerId);pressDirection('s',true);}} onPointerUp={()=>pressDirection('s',false)} onPointerCancel={()=>pressDirection('s',false)}>▼</button><button aria-label="Вправо" onPointerDown={(event)=>{event.currentTarget.setPointerCapture(event.pointerId);pressDirection('d',true);}} onPointerUp={()=>pressDirection('d',false)} onPointerCancel={()=>pressDirection('d',false)}>▶</button></div><button className={styles.actionButton} aria-label={mode==='arcade'&&arcadeHud?.kind==='shooting'?'Стрелять':'Действие'}
       onPointerDown={(event)=>{if(stateRef.current.mode==='arcade'&&arcadeRef.current?.kind==='shooting'){event.currentTarget.setPointerCapture(event.pointerId);fireHeld.current=true;firePulse.current=true;}}}
       onPointerUp={()=>{fireHeld.current=false;}} onPointerCancel={()=>{fireHeld.current=false;}} onLostPointerCapture={()=>{fireHeld.current=false;}} onClick={interact}>A<small>{mode==='arcade'&&arcadeHud?.kind==='shooting'?'FIRE':'ACTION'}</small></button></div>
-    <footer><span>{GAME_TEXT.controls}</span><div><button onClick={restart}>МЕНЮ</button></div></footer>
+    <footer><span>{GAME_TEXT.controls}{mode==='arcade'?' · Esc — пауза':''}</span><div>{mode==='arcade'&&<button data-pause-control="true" onClick={pauseArcade}>ПАУЗА</button>}<button onClick={restart}>МЕНЮ</button></div></footer>
   </section></main>;
 }
